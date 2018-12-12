@@ -1,0 +1,19 @@
+1,0.00,,0,Project command:c:\Users\guoyi\Desktop\laya\example\game/.actionScriptProperties;iflash=false;windowshow=false;chromerun=false;quickcompile=true
+Project configuration:c:\Users\guoyi\Desktop\laya\example\game/.actionScriptProperties.
+1,0.00,,0,output path:c:/Users/guoyi/Desktop/laya/example/game/bin/h5/
+1,0.00,,0,Main Class:c:/Users/guoyi/Desktop/laya/example/game/src/LayaSample.as
+1,0.00,,0,output file:LayaSample
+1,0.00,,0,compilerSourcePath c:/Users/guoyi/Desktop/laya/example/game/libs/laya/src/
+
+1,0.00,,0,Compile Path:c:/Users/guoyi/Desktop/laya/example/game/src/
+
+1,0.00,,0,Compile Path:c:/Users/guoyi/Desktop/laya/example/game/libs/laya/src/
+
+1,0.00,c:/Users/guoyi/Desktop/laya/example/game/src,0,Collect
+1,0.00,c:/Users/guoyi/Desktop/laya/example/game/libs/laya/src,0,Collect
+1,2.00,,0,read class message
+1,89.84,,0,Disable Flash3D c:/Users/guoyi/Desktop/laya/example/game/src/LayaSample.as
+12,89.84,c:/Users/guoyi/Desktop/laya/example/game/bin/h5/LayaSample.max.js,832573,
+11,89.84,c:/Users/guoyi/Desktop/laya/example/game/bin/h5/LayaSample.max.html,893,
+******************************************************************************
+14,89.84,,0,
