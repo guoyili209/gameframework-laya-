@@ -1,5 +1,5 @@
 ﻿package {
-    import core.tool.CLog;
+    import core.tool.log.CLog;
     import core.tool.CObjectUtil;
     
     import laya.webgl.WebGL;

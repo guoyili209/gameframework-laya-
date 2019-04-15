@@ -14,7 +14,7 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个 <code>Dialog</code> 实例。</caption>
 	 * package
 	 *	{
-	 *		import laya.ui.Dialog;
+	 *		import laya.uiSys.Dialog;
 	 *		import laya.utils.Handler;
 	 *		public class Dialog_Example
 	 *		{
@@ -23,7 +23,7 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);//设置游戏画布宽高、渲染模式。
 	 *				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load("resource/ui/btn_close.png", Handler.create(this, onLoadComplete));//加载资源。
+	 *				Laya.loader.load("resource/uiSys/btn_close.png", Handler.create(this, onLoadComplete));//加载资源。
 	 *			}
 	 *			private function onLoadComplete():void
 	 *			{
@@ -41,21 +41,21 @@ package laya.ui {
 	 *			}
 	 *		}
 	 *	}
-	 *	import laya.ui.Button;
-	 *	import laya.ui.Dialog;
-	 *	import laya.ui.Image;
+	 *	import laya.uiSys.Button;
+	 *	import laya.uiSys.Dialog;
+	 *	import laya.uiSys.Image;
 	 *	class Dialog_Instance extends Dialog
 	 *	{
 	 *		function Dialog_Instance():void
 	 *		{
-	 *			var bg:Image = new Image("resource/ui/bg.png");
+	 *			var bg:Image = new Image("resource/uiSys/bg.png");
 	 *			bg.sizeGrid = "40,10,5,10";
 	 *			bg.width = 150;
 	 *			bg.height = 250;
 	 *			addChild(bg);
-	 *			var image:Image = new Image("resource/ui/image.png");
+	 *			var image:Image = new Image("resource/uiSys/image.png");
 	 *			addChild(image);
-	 *			var button:Button = new Button("resource/ui/btn_close.png");
+	 *			var button:Button = new Button("resource/uiSys/btn_close.png");
 	 *			button.name = Dialog.CLOSE;//设置button的name属性值。
 	 *			button.x = 0;
 	 *			button.y = 0;
@@ -66,25 +66,25 @@ package laya.ui {
 	 * Laya.init(640, 800);//设置游戏画布宽高、渲染模式
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
 	 * var dialog;
-	 * Laya.loader.load("resource/ui/btn_close.png", laya.utils.Handler.create(this, loadComplete));//加载资源
-	 * (function (_super) {//新建一个类Dialog_Instance继承自laya.ui.Dialog。
+	 * Laya.loader.load("resource/uiSys/btn_close.png", laya.utils.Handler.create(this, loadComplete));//加载资源
+	 * (function (_super) {//新建一个类Dialog_Instance继承自laya.uiSys.Dialog。
 	 *     function Dialog_Instance() {
 	 *         Dialog_Instance.__super.call(this);//初始化父类
-	 *         var bg = new laya.ui.Image("resource/ui/bg.png");//新建一个 Image 类的实例 bg 。
+	 *         var bg = new laya.uiSys.Image("resource/uiSys/bg.png");//新建一个 Image 类的实例 bg 。
 	 *         bg.sizeGrid = "10,40,10,5";//设置 bg 的网格信息。
 	 *         bg.width = 150;//设置 bg 的宽度。
 	 *         bg.height = 250;//设置 bg 的高度。
 	 *         this.addChild(bg);//将 bg 添加到显示列表。
-	 *         var image = new laya.ui.Image("resource/ui/image.png");//新建一个 Image 类的实例 image 。
+	 *         var image = new laya.uiSys.Image("resource/uiSys/image.png");//新建一个 Image 类的实例 image 。
 	 *         this.addChild(image);//将 image 添加到显示列表。
-	 *         var button = new laya.ui.Button("resource/ui/btn_close.png");//新建一个 Button 类的实例 bg 。
-	 *         button.name = laya.ui.Dialog.CLOSE;//设置 button 的 name 属性值。
+	 *         var button = new laya.uiSys.Button("resource/uiSys/btn_close.png");//新建一个 Button 类的实例 bg 。
+	 *         button.name = laya.uiSys.Dialog.CLOSE;//设置 button 的 name 属性值。
 	 *         button.x = 0;//设置 button 对象的属性 x 的值，用于控制 button 对象的显示位置。
 	 *         button.y = 0;//设置 button 对象的属性 y 的值，用于控制 button 对象的显示位置。
 	 *         this.addChild(button);//将 button 添加到显示列表。
 	 *     };
 	 *     Laya.class(Dialog_Instance,"mypackage.dialogExample.Dialog_Instance",_super);//注册类Dialog_Instance。
-	 * })(laya.ui.Dialog);
+	 * })(laya.uiSys.Dialog);
 	 * function loadComplete() {
 	 *     console.log("资源加载完成！");
 	 *     dialog = new mypackage.dialogExample.Dialog_Instance();//创建一个 Dialog_Instance 类的实例对象 dialog。
@@ -93,19 +93,19 @@ package laya.ui {
 	 *     dialog.closeHandler = new laya.utils.Handler(this, onClose);//设置 dialog 的关闭函数处理器。
 	 * }
 	 * function onClose(name) {
-	 *     if (name == laya.ui.Dialog.CLOSE) {
+	 *     if (name == laya.uiSys.Dialog.CLOSE) {
 	 *         console.log("通过点击 name 为" + name + "的组件，关闭了dialog。");
 	 *     }
 	 * }
 	 * @example
-	 * import Dialog = laya.ui.Dialog;
+	 * import Dialog = laya.uiSys.Dialog;
 	 * import Handler = laya.utils.Handler;
 	 * class Dialog_Example {
 	 *     private dialog: Dialog_Instance;
 	 *     constructor() {
 	 *         Laya.init(640, 800);//设置游戏画布宽高。
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load("resource/ui/btn_close.png", Handler.create(this, this.onLoadComplete));//加载资源。
+	 *         Laya.loader.load("resource/uiSys/btn_close.png", Handler.create(this, this.onLoadComplete));//加载资源。
 	 *     }
 	 *     private onLoadComplete(): void {
 	 *         this.dialog = new Dialog_Instance();//创建一个 Dialog_Instance 类的实例对象 dialog。
@@ -119,17 +119,17 @@ package laya.ui {
 	 *         }
 	 *     }
 	 * }
-	 * import Button = laya.ui.Button;
+	 * import Button = laya.uiSys.Button;
 	 * class Dialog_Instance extends Dialog {
 	 *     Dialog_Instance(): void {
-	 *         var bg: laya.ui.Image = new laya.ui.Image("resource/ui/bg.png");
+	 *         var bg: laya.uiSys.Image = new laya.uiSys.Image("resource/uiSys/bg.png");
 	 *         bg.sizeGrid = "40,10,5,10";
 	 *         bg.width = 150;
 	 *         bg.height = 250;
 	 *         this.addChild(bg);
-	 *         var image: laya.ui.Image = new laya.ui.Image("resource/ui/image.png");
+	 *         var image: laya.uiSys.Image = new laya.uiSys.Image("resource/uiSys/image.png");
 	 *         this.addChild(image);
-	 *         var button: Button = new Button("resource/ui/btn_close.png");
+	 *         var button: Button = new Button("resource/uiSys/btn_close.png");
 	 *         button.name = Dialog.CLOSE;//设置button的name属性值。
 	 *         button.x = 0;
 	 *         button.y = 0;

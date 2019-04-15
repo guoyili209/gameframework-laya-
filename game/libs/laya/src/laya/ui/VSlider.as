@@ -7,8 +7,8 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个 <code>VSlider</code> 实例。</caption>
 	 * package
 	 *	{
-	 *		import laya.ui.HSlider;
-	 *		import laya.ui.VSlider;
+	 *		import laya.uiSys.HSlider;
+	 *		import laya.uiSys.VSlider;
 	 *		import laya.utils.Handler;
 	 *		public class VSlider_Example
 	 *		{
@@ -17,12 +17,12 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);//设置游戏画布宽高。
 	 *				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load(["resource/ui/vslider.png", "resource/ui/vslider$bar.png"], Handler.create(this, onLoadComplete));//加载资源。
+	 *				Laya.loader.load(["resource/uiSys/vslider.png", "resource/uiSys/vslider$bar.png"], Handler.create(this, onLoadComplete));//加载资源。
 	 *			}
 	 *			private function onLoadComplete():void
 	 *			{
 	 *				vSlider = new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-	 *				vSlider.skin = "resource/ui/vslider.png";//设置 vSlider 的皮肤。
+	 *				vSlider.skin = "resource/uiSys/vslider.png";//设置 vSlider 的皮肤。
 	 *				vSlider.min = 0;//设置 vSlider 最低位置值。
 	 *				vSlider.max = 10;//设置 vSlider 最高位置值。
 	 *				vSlider.value = 2;//设置 vSlider 当前位置值。
@@ -42,10 +42,10 @@ package laya.ui {
 	 * Laya.init(640, 800);//设置游戏画布宽高
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
 	 * var vSlider;
-	 * Laya.loader.load(["resource/ui/vslider.png", "resource/ui/vslider$bar.png"], laya.utils.Handler.create(this, onLoadComplete));//加载资源。
+	 * Laya.loader.load(["resource/uiSys/vslider.png", "resource/uiSys/vslider$bar.png"], laya.utils.Handler.create(this, onLoadComplete));//加载资源。
 	 * function onLoadComplete() {
-	 *     vSlider = new laya.ui.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-	 *     vSlider.skin = "resource/ui/vslider.png";//设置 vSlider 的皮肤。
+	 *     vSlider = new laya.uiSys.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+	 *     vSlider.skin = "resource/uiSys/vslider.png";//设置 vSlider 的皮肤。
 	 *     vSlider.min = 0;//设置 vSlider 最低位置值。
 	 *     vSlider.max = 10;//设置 vSlider 最高位置值。
 	 *     vSlider.value = 2;//设置 vSlider 当前位置值。
@@ -59,19 +59,19 @@ package laya.ui {
 	 *     console.log("滑块的位置： value=" + value);
 	 * }
 	 * @example
-	 * import HSlider = laya.ui.HSlider;
-	 * import VSlider = laya.ui.VSlider;
+	 * import HSlider = laya.uiSys.HSlider;
+	 * import VSlider = laya.uiSys.VSlider;
 	 * import Handler = laya.utils.Handler;
 	 * class VSlider_Example {
 	 *     private vSlider: VSlider;
 	 *     constructor() {
 	 *         Laya.init(640, 800);//设置游戏画布宽高。
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load(["resource/ui/vslider.png", "resource/ui/vslider$bar.png"], Handler.create(this, this.onLoadComplete));//加载资源。
+	 *         Laya.loader.load(["resource/uiSys/vslider.png", "resource/uiSys/vslider$bar.png"], Handler.create(this, this.onLoadComplete));//加载资源。
 	 *     }
 	 *     private onLoadComplete(): void {
 	 *         this.vSlider = new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-	 *         this.vSlider.skin = "resource/ui/vslider.png";//设置 vSlider 的皮肤。
+	 *         this.vSlider.skin = "resource/uiSys/vslider.png";//设置 vSlider 的皮肤。
 	 *         this.vSlider.min = 0;//设置 vSlider 最低位置值。
 	 *         this.vSlider.max = 10;//设置 vSlider 最高位置值。
 	 *         this.vSlider.value = 2;//设置 vSlider 当前位置值。

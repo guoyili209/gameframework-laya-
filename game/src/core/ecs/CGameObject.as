@@ -1,16 +1,23 @@
 package core.ecs {
-    import core.ecs.CComponent;
-    
     public class CGameObject {
         public function CGameObject() {
         }
         
         public function addComponent(comp:CComponent):void{
-           _pComponentVec.push(comp);
+            if(_pComponentVec.indexOf(comp)>-1){
+            
+            }else{
+                _pComponentVec.push(comp);
+            }
         }
         
-        public function removeComponent():void{
-        
+        public function removeComponent(cls:Class):void{
+            for each(var comp:CComponent in _pComponentVec){
+                if(comp is cls){
+                    var index:int = _pComponentVec.indexOf(comp);
+                    _pComponentVec.splice(index);
+                }
+            }
         }
         
         public function getComponent(cls:Class):CComponent{

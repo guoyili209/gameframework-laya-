@@ -10,6 +10,11 @@ package core.ecs {
     public class CSystem extends EventDispatcher{
         public function CSystem(facade:CAppFacade) {
             this.facade = facade;
+            _init();
+        }
+        
+        protected function _init():void{
+            throw new Error("_init()没有被覆写:"+getQualifiedClassName(this));
         }
         
         public function get enable():Boolean{

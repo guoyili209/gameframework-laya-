@@ -3,11 +3,11 @@ package core.mvc {
     import core.socket.CCustomSocket;
     
     public class CController {
-        protected var socket:CCustomSocket = null;
-        protected var system:CSystem = null;
+        protected var _socket:CCustomSocket = null;
+        protected var _system:CSystem = null;
         public function CController(system:CSystem) {
-            this.system = system;
-            socket = system.facade.socket;
+            this._system = system;
+            _socket = system.facade.socket;
             init();
             registerSocket();
         }
@@ -17,6 +17,10 @@ package core.mvc {
         }
         
         protected function registerSocket():void{
+        
+        }
+        
+        public function sendCMDData(cmd:int,data:Object):void{
         
         }
     }

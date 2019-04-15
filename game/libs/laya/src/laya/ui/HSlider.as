@@ -7,7 +7,7 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个 <code>HSlider</code> 实例。</caption>
 	 * package
 	 *	{
-	 *		import laya.ui.HSlider;
+	 *		import laya.uiSys.HSlider;
 	 *		import laya.utils.Handler;
 	 *		public class HSlider_Example
 	 *		{
@@ -16,12 +16,12 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);//设置游戏画布宽高。
 	 *				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load(["resource/ui/hslider.png", "resource/ui/hslider$bar.png"], Handler.create(this, onLoadComplete));//加载资源。
+	 *				Laya.loader.load(["resource/uiSys/hslider.png", "resource/uiSys/hslider$bar.png"], Handler.create(this, onLoadComplete));//加载资源。
 	 *			}
 	 *			private function onLoadComplete():void
 	 *			{
 	 *				hSlider = new HSlider();//创建一个 HSlider 类的实例对象 hSlider 。
-	 *				hSlider.skin = "resource/ui/hslider.png";//设置 hSlider 的皮肤。
+	 *				hSlider.skin = "resource/uiSys/hslider.png";//设置 hSlider 的皮肤。
 	 *				hSlider.min = 0;//设置 hSlider 最低位置值。
 	 *				hSlider.max = 10;//设置 hSlider 最高位置值。
 	 *				hSlider.value = 2;//设置 hSlider 当前位置值。
@@ -41,12 +41,12 @@ package laya.ui {
 	 * Laya.init(640, 800, "canvas");//设置游戏画布宽高、渲染模式
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
 	 * var hSlider;
-	 * var res = ["resource/ui/hslider.png", "resource/ui/hslider$bar.png"];
+	 * var res = ["resource/uiSys/hslider.png", "resource/uiSys/hslider$bar.png"];
 	 * Laya.loader.load(res, laya.utils.Handler.create(this, onLoadComplete));
 	 * function onLoadComplete() {
 	 *     console.log("资源加载完成！");
-	 *     hSlider = new laya.ui.HSlider();//创建一个 HSlider 类的实例对象 hSlider 。
-	 *     hSlider.skin = "resource/ui/hslider.png";//设置 hSlider 的皮肤。
+	 *     hSlider = new laya.uiSys.HSlider();//创建一个 HSlider 类的实例对象 hSlider 。
+	 *     hSlider.skin = "resource/uiSys/hslider.png";//设置 hSlider 的皮肤。
 	 *     hSlider.min = 0;//设置 hSlider 最低位置值。
 	 *     hSlider.max = 10;//设置 hSlider 最高位置值。
 	 *     hSlider.value = 2;//设置 hSlider 当前位置值。
@@ -62,17 +62,17 @@ package laya.ui {
 	 * }
 	 * @example
 	 * import Handler = laya.utils.Handler;
-	 * import HSlider = laya.ui.HSlider;
+	 * import HSlider = laya.uiSys.HSlider;
 	 * class HSlider_Example {
 	 *     private hSlider: HSlider;
 	 *     constructor() {
 	 *         Laya.init(640, 800);//设置游戏画布宽高。
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load(["resource/ui/hslider.png", "resource/ui/hslider$bar.png"], Handler.create(this, this.onLoadComplete));//加载资源。
+	 *         Laya.loader.load(["resource/uiSys/hslider.png", "resource/uiSys/hslider$bar.png"], Handler.create(this, this.onLoadComplete));//加载资源。
 	 *     }
 	 *     private onLoadComplete(): void {
 	 *         this.hSlider = new HSlider();//创建一个 HSlider 类的实例对象 hSlider 。
-	 *         this.hSlider.skin = "resource/ui/hslider.png";//设置 hSlider 的皮肤。
+	 *         this.hSlider.skin = "resource/uiSys/hslider.png";//设置 hSlider 的皮肤。
 	 *         this.hSlider.min = 0;//设置 hSlider 最低位置值。
 	 *         this.hSlider.max = 10;//设置 hSlider 最高位置值。
 	 *         this.hSlider.value = 2;//设置 hSlider 当前位置值。

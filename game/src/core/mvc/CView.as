@@ -9,12 +9,8 @@ package core.mvc {
             system = sys;
         }
         
-        protected function get assetsURL():Array{
-            return [];
-        }
-        
         public function showView():void{
-            _loaderAssets();
+        
         }
         
         public function closeView():void{
@@ -25,12 +21,6 @@ package core.mvc {
         
         }
         
-        private function _loaderAssets():void{
-            Laya.loader.load(assetsURL,new Handler(this,assetsComplete));
-        }
         
-        protected function assetsComplete():void{
-        
-        }
     }
 }

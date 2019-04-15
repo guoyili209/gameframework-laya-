@@ -19,7 +19,7 @@ package laya.ui {
 	 * @example
 	 * package
 	 *	{
-	 *		import laya.ui.Tree;
+	 *		import laya.uiSys.Tree;
 	 *		import laya.utils.Browser;
 	 *		import laya.utils.Handler;
 	
@@ -30,7 +30,7 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);
 	 *				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load(["resource/ui/vscroll.png", "resource/ui/vscroll$bar.png", "resource/ui/vscroll$down.png", "resource/ui/vscroll$up.png", "resource/ui/clip_selectBox.png", "resource/ui/clip_tree_folder.png", "resource/ui/clip_tree_arrow.png"], Handler.create(this, onLoadComplete));
+	 *				Laya.loader.load(["resource/uiSys/vscroll.png", "resource/uiSys/vscroll$bar.png", "resource/uiSys/vscroll$down.png", "resource/uiSys/vscroll$up.png", "resource/uiSys/clip_selectBox.png", "resource/uiSys/clip_tree_folder.png", "resource/uiSys/clip_tree_arrow.png"], Handler.create(this, onLoadComplete));
 	 *			}
 	
 	 *			private function onLoadComplete():void
@@ -41,7 +41,7 @@ package laya.ui {
 	 *				var xml:* = domParser.parseFromString(xmlString, "text/xml");//解析xml字符。
 	
 	 *				var tree:Tree = new Tree();//创建一个 Tree 类的实例对象 tree 。
-	 *				tree.scrollBarSkin = "resource/ui/vscroll.png";//设置 tree 的皮肤。
+	 *				tree.scrollBarSkin = "resource/uiSys/vscroll.png";//设置 tree 的皮肤。
 	 *				tree.itemRender = Item;//设置 tree 的项渲染器。
 	 *				tree.xml = xml;//设置 tree 的树结构数据。
 	 *				tree.x = 100;//设置 tree 对象的属性 x 的值，用于控制 tree 对象的显示位置。
@@ -53,9 +53,9 @@ package laya.ui {
 	 *		}
 	 *	}
 	
-	 * import laya.ui.Box;
-	 * import laya.ui.Clip;
-	 * import laya.ui.Label;
+	 * import laya.uiSys.Box;
+	 * import laya.uiSys.Clip;
+	 * import laya.uiSys.Label;
 	 *	class Item extends Box
 	 *	{
 	 *		public function Item()
@@ -64,7 +64,7 @@ package laya.ui {
 	 *			this.right = 0;
 	 *			this.left = 0;
 	
-	 *			var selectBox:Clip = new Clip("resource/ui/clip_selectBox.png", 1, 2);
+	 *			var selectBox:Clip = new Clip("resource/uiSys/clip_selectBox.png", 1, 2);
 	 *			selectBox.name = "selectBox";
 	 *			selectBox.height = 24;
 	 *			selectBox.x = 13;
@@ -72,7 +72,7 @@ package laya.ui {
 	 *			selectBox.left = 12;
 	 *			addChild(selectBox);
 	
-	 *			var folder:Clip = new Clip("resource/ui/clip_tree_folder.png", 1, 3);
+	 *			var folder:Clip = new Clip("resource/uiSys/clip_tree_folder.png", 1, 3);
 	 *			folder.name = "folder";
 	 *			folder.x = 14;
 	 *			folder.y = 4;
@@ -89,7 +89,7 @@ package laya.ui {
 	 *			label.right = 0;
 	 *			addChild(label);
 	
-	 *			var arrow:Clip = new Clip("resource/ui/clip_tree_arrow.png", 1, 2);
+	 *			var arrow:Clip = new Clip("resource/uiSys/clip_tree_arrow.png", 1, 2);
 	 *			arrow.name = "arrow";
 	 *			arrow.x = 0;
 	 *			arrow.y = 5;
@@ -99,7 +99,7 @@ package laya.ui {
 	 * @example
 	 * Laya.init(640, 800);//设置游戏画布宽高、渲染模式
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
-	 * var res = ["resource/ui/vscroll.png", "resource/ui/vscroll$bar.png", "resource/ui/vscroll$down.png", "resource/ui/vscroll$up.png", "resource/ui/clip_selectBox.png", "resource/ui/clip_tree_folder.png", "resource/ui/clip_tree_arrow.png"];
+	 * var res = ["resource/uiSys/vscroll.png", "resource/uiSys/vscroll$bar.png", "resource/uiSys/vscroll$down.png", "resource/uiSys/vscroll$up.png", "resource/uiSys/clip_selectBox.png", "resource/uiSys/clip_tree_folder.png", "resource/uiSys/clip_tree_arrow.png"];
 	 * Laya.loader.load(res, new laya.utils.Handler(this, onLoadComplete));
 	 * function onLoadComplete() {
 	 *     var xmlString;//创建一个xml字符串，用于存储树结构数据。
@@ -107,8 +107,8 @@ package laya.ui {
 	 *     var domParser = new laya.utils.Browser.window.DOMParser();//创建一个DOMParser实例domParser。
 	 *     var xml = domParser.parseFromString(xmlString, "text/xml");//解析xml字符。
 	
-	 *     var tree = new laya.ui.Tree();//创建一个 Tree 类的实例对象 tree 。
-	 *     tree.scrollBarSkin = "resource/ui/vscroll.png";//设置 tree 的皮肤。
+	 *     var tree = new laya.uiSys.Tree();//创建一个 Tree 类的实例对象 tree 。
+	 *     tree.scrollBarSkin = "resource/uiSys/vscroll.png";//设置 tree 的皮肤。
 	 *     tree.itemRender = mypackage.treeExample.Item;//设置 tree 的项渲染器。
 	 *     tree.xml = xml;//设置 tree 的树结构数据。
 	 *     tree.x = 100;//设置 tree 对象的属性 x 的值，用于控制 tree 对象的显示位置。
@@ -123,7 +123,7 @@ package laya.ui {
 	 *         this.right = 0;
 	 *         this.left = 0;
 	
-	 *         var selectBox = new laya.ui.Clip("resource/ui/clip_selectBox.png", 1, 2);
+	 *         var selectBox = new laya.uiSys.Clip("resource/uiSys/clip_selectBox.png", 1, 2);
 	 *         selectBox.name = "selectBox";//设置 selectBox 的name 为“selectBox”时，将被识别为树结构的项的背景。2帧：悬停时背景、选中时背景。
 	 *         selectBox.height = 24;
 	 *         selectBox.x = 13;
@@ -131,13 +131,13 @@ package laya.ui {
 	 *         selectBox.left = 12;
 	 *         this.addChild(selectBox);//需要使用this.访问父类的属性或方法。
 	
-	 *         var folder = new laya.ui.Clip("resource/ui/clip_tree_folder.png", 1, 3);
+	 *         var folder = new laya.uiSys.Clip("resource/uiSys/clip_tree_folder.png", 1, 3);
 	 *         folder.name = "folder";//设置 folder 的name 为“folder”时，将被识别为树结构的文件夹开启状态图表。2帧：折叠状态、打开状态。
 	 *         folder.x = 14;
 	 *         folder.y = 4;
 	 *         this.addChild(folder);
 	
-	 *         var label = new laya.ui.Label("treeItem");
+	 *         var label = new laya.uiSys.Label("treeItem");
 	 *         label.name = "label";//设置 label 的name 为“label”时，此值将用于树结构数据赋值。
 	 *         label.color = "#ffff00";
 	 *         label.width = 150;
@@ -148,16 +148,16 @@ package laya.ui {
 	 *         label.right = 0;
 	 *         this.addChild(label);
 	
-	 *         var arrow = new laya.ui.Clip("resource/ui/clip_tree_arrow.png", 1, 2);
+	 *         var arrow = new laya.uiSys.Clip("resource/uiSys/clip_tree_arrow.png", 1, 2);
 	 *         arrow.name = "arrow";//设置 arrow 的name 为“arrow”时，将被识别为树结构的文件夹开启状态图表。2帧：折叠状态、打开状态。
 	 *         arrow.x = 0;
 	 *         arrow.y = 5;
 	 *         this.addChild(arrow);
 	 *     };
 	 *     Laya.class(Item,"mypackage.treeExample.Item",_super);//注册类 Item 。
-	 * })(laya.ui.Box);
+	 * })(laya.uiSys.Box);
 	 * @example
-	 * import Tree = laya.ui.Tree;
+	 * import Tree = laya.uiSys.Tree;
 	 * import Browser = laya.utils.Browser;
 	 * import Handler = laya.utils.Handler;
 	 * class Tree_Example {
@@ -165,7 +165,7 @@ package laya.ui {
 	 *     constructor() {
 	 *         Laya.init(640, 800);
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load(["resource/ui/vscroll.png", "resource/ui/vscroll$bar.png", "resource/ui/vscroll$down.png", "resource/ui/vscroll$up.png", "resource/ui/vscroll$up.png", "resource/ui/clip_selectBox.png", "resource/ui/clip_tree_folder * . * png", "resource/ui/clip_tree_arrow.png"], Handler.create(this, this.onLoadComplete));
+	 *         Laya.loader.load(["resource/uiSys/vscroll.png", "resource/uiSys/vscroll$bar.png", "resource/uiSys/vscroll$down.png", "resource/uiSys/vscroll$up.png", "resource/uiSys/vscroll$up.png", "resource/uiSys/clip_selectBox.png", "resource/uiSys/clip_tree_folder * . * png", "resource/uiSys/clip_tree_arrow.png"], Handler.create(this, this.onLoadComplete));
 	 *     }
 	 *     private onLoadComplete(): void {
 	 *         var xmlString: String;//创建一个xml字符串，用于存储树结构数据。
@@ -174,7 +174,7 @@ package laya.ui {
 	 *         var xml: any = domParser.parseFromString(xmlString, "text/xml");//解析xml字符。
 	
 	 *         var tree: Tree = new Tree();//创建一个 Tree 类的实例对象 tree 。
-	 *         tree.scrollBarSkin = "resource/ui/vscroll.png";//设置 tree 的皮肤。
+	 *         tree.scrollBarSkin = "resource/uiSys/vscroll.png";//设置 tree 的皮肤。
 	 *         tree.itemRender = Item;//设置 tree 的项渲染器。
 	 *         tree.xml = xml;//设置 tree 的树结构数据。
 	 *         tree.x = 100;//设置 tree 对象的属性 x 的值，用于控制 tree 对象的显示位置。
@@ -184,16 +184,16 @@ package laya.ui {
 	 *         Laya.stage.addChild(tree);//将 tree 添加到显示列表。
 	 *     }
 	 * }
-	 * import Box = laya.ui.Box;
-	 * import Clip = laya.ui.Clip;
-	 * import Label = laya.ui.Label;
+	 * import Box = laya.uiSys.Box;
+	 * import Clip = laya.uiSys.Clip;
+	 * import Label = laya.uiSys.Label;
 	 * class Item extends Box {
 	 *     constructor() {
 	 *         super();
 	 *         this.name = "render";
 	 *         this.right = 0;
 	 *         this.left = 0;
-	 *         var selectBox: Clip = new Clip("resource/ui/clip_selectBox.png", 1, 2);
+	 *         var selectBox: Clip = new Clip("resource/uiSys/clip_selectBox.png", 1, 2);
 	 *         selectBox.name = "selectBox";
 	 *         selectBox.height = 24;
 	 *         selectBox.x = 13;
@@ -201,7 +201,7 @@ package laya.ui {
 	 *         selectBox.left = 12;
 	 *         this.addChild(selectBox);
 	
-	 *         var folder: Clip = new Clip("resource/ui/clip_tree_folder.png", 1, 3);
+	 *         var folder: Clip = new Clip("resource/uiSys/clip_tree_folder.png", 1, 3);
 	 *         folder.name = "folder";
 	 *         folder.x = 14;
 	 *         folder.y = 4;
@@ -218,7 +218,7 @@ package laya.ui {
 	 *         label.right = 0;
 	 *         this.addChild(label);
 	
-	 *         var arrow: Clip = new Clip("resource/ui/clip_tree_arrow.png", 1, 2);
+	 *         var arrow: Clip = new Clip("resource/uiSys/clip_tree_arrow.png", 1, 2);
 	 *         arrow.name = "arrow";
 	 *         arrow.x = 0;
 	 *         arrow.y = 5;

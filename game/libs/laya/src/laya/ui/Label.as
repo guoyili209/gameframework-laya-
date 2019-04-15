@@ -17,7 +17,7 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个 <code>Label</code> 实例。</caption>
 	 * package
 	 *	{
-	 *		import laya.ui.Label;
+	 *		import laya.uiSys.Label;
 	 *		public class Label_Example
 	 *		{
 	 *			public function Label_Example()
@@ -58,7 +58,7 @@ package laya.ui {
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
 	 * onInit();
 	 * function onInit(){
-	 *     var label = new laya.ui.Label();//创建一个 Label 类的实例对象 label 。
+	 *     var label = new laya.uiSys.Label();//创建一个 Label 类的实例对象 label 。
 	 *     label.font = "Arial";//设置 label 的字体。
 	 *     label.bold = true;//设置 label 显示为粗体。
 	 *     label.leading = 4;//设置 label 的行间距。
@@ -71,7 +71,7 @@ package laya.ui {
 	 *     label.width = 300;//设置 label 的宽度。
 	 *     label.height = 200;//设置 label 的高度。
 	 *     Laya.stage.addChild(label);//将 label 添加到显示列表。
-	 *     var passwordLabel = new laya.ui.Label("请原谅我，我不想被人看到我心里话。");//创建一个 Label 类的实例对象 passwordLabel 。
+	 *     var passwordLabel = new laya.uiSys.Label("请原谅我，我不想被人看到我心里话。");//创建一个 Label 类的实例对象 passwordLabel 。
 	 *     passwordLabel.asPassword = true;//设置 passwordLabel 的显示反式为密码显示。
 	 *     passwordLabel.x = 100;//设置 passwordLabel 对象的属性 x 的值，用于控制 passwordLabel 对象的显示位置。
 	 *     passwordLabel.y = 350;//设置 passwordLabel 对象的属性 y 的值，用于控制 passwordLabel 对象的显示位置。
@@ -82,7 +82,7 @@ package laya.ui {
 	 *     Laya.stage.addChild(passwordLabel);//将 passwordLabel 添加到显示列表。
 	 * }
 	 * @example
-	 * import Label = laya.ui.Label;
+	 * import Label = laya.uiSys.Label;
 	 * class Label_Example {
 	 *     constructor() {
 	 *         Laya.init(640, 800);//设置游戏画布宽高。

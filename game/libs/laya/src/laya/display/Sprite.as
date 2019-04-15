@@ -84,7 +84,7 @@ package laya.display {
 	 * 		private function onInit():void
 	 * 		{
 	 * 			sprite = new Sprite();//创建一个 Sprite 类的实例对象 sprite 。
-	 * 			sprite.loadImage("resource/ui/bg.png");//加载并显示图片。
+	 * 			sprite.loadImage("resource/uiSys/bg.png");//加载并显示图片。
 	 * 			sprite.x = 200;//设置 sprite 对象相对于父容器的水平方向坐标值。
 	 * 			sprite.y = 200;//设置 sprite 对象相对于父容器的垂直方向坐标值。
 	 * 			sprite.pivotX = 0;//设置 sprite 对象的水平方法轴心点坐标。
@@ -129,7 +129,7 @@ package laya.display {
 	 * function onInit()
 	 * {
 	 *     sprite = new laya.display.Sprite();//创建一个 Sprite 类的实例对象 sprite 。
-	 *     sprite.loadImage("resource/ui/bg.png");//加载并显示图片。
+	 *     sprite.loadImage("resource/uiSys/bg.png");//加载并显示图片。
 	 *     sprite.x = 200;//设置 sprite 对象相对于父容器的水平方向坐标值。
 	 *     sprite.y = 200;//设置 sprite 对象相对于父容器的垂直方向坐标值。
 	 *     sprite.pivotX = 0;//设置 sprite 对象的水平方法轴心点坐标。
@@ -171,7 +171,7 @@ package laya.display {
 	 *     }
 	 *     private onInit(): void {
 	 *         this.sprite = new Sprite();//创建一个 Sprite 类的实例对象 sprite 。
-	 *         this.sprite.loadImage("resource/ui/bg.png");//加载并显示图片。
+	 *         this.sprite.loadImage("resource/uiSys/bg.png");//加载并显示图片。
 	 *         this.sprite.x = 200;//设置 sprite 对象相对于父容器的水平方向坐标值。
 	 *         this.sprite.y = 200;//设置 sprite 对象相对于父容器的垂直方向坐标值。
 	 *         this.sprite.pivotX = 0;//设置 sprite 对象的水平方法轴心点坐标。

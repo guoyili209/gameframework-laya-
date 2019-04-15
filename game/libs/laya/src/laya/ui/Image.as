@@ -20,7 +20,7 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个新的 <code>Image</code> 实例，设置了它的皮肤、位置信息，并添加到舞台上。</caption>
 	 *	package
 	 *	 {
-	 *		import laya.ui.Image;
+	 *		import laya.uiSys.Image;
 	 *		public class Image_Example
 	 *		{
 	 *			public function Image_Example()
@@ -31,14 +31,14 @@ package laya.ui {
 	 *			}
 	 *			private function onInit():void
 	 *	 		{
-	 *				var bg:Image = new Image("resource/ui/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
+	 *				var bg:Image = new Image("resource/uiSys/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
 	 *				bg.x = 100;//设置 bg 对象的属性 x 的值，用于控制 bg 对象的显示位置。
 	 *				bg.y = 100;//设置 bg 对象的属性 y 的值，用于控制 bg 对象的显示位置。
 	 *				bg.sizeGrid = "40,10,5,10";//设置 bg 对象的网格信息。
 	 *				bg.width = 150;//设置 bg 对象的宽度。
 	 *				bg.height = 250;//设置 bg 对象的高度。
 	 *				Laya.stage.addChild(bg);//将此 bg 对象添加到显示列表。
-	 *				var image:Image = new Image("resource/ui/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
+	 *				var image:Image = new Image("resource/uiSys/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
 	 *				image.x = 100;//设置 image 对象的属性 x 的值，用于控制 image 对象的显示位置。
 	 *				image.y = 100;//设置 image 对象的属性 y 的值，用于控制 image 对象的显示位置。
 	 *				Laya.stage.addChild(image);//将此 image 对象添加到显示列表。
@@ -50,14 +50,14 @@ package laya.ui {
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
 	 * onInit();
 	 * function onInit() {
-	 *     var bg = new laya.ui.Image("resource/ui/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
+	 *     var bg = new laya.uiSys.Image("resource/uiSys/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
 	 *     bg.x = 100;//设置 bg 对象的属性 x 的值，用于控制 bg 对象的显示位置。
 	 *     bg.y = 100;//设置 bg 对象的属性 y 的值，用于控制 bg 对象的显示位置。
 	 *     bg.sizeGrid = "40,10,5,10";//设置 bg 对象的网格信息。
 	 *     bg.width = 150;//设置 bg 对象的宽度。
 	 *     bg.height = 250;//设置 bg 对象的高度。
 	 *     Laya.stage.addChild(bg);//将此 bg 对象添加到显示列表。
-	 *     var image = new laya.ui.Image("resource/ui/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
+	 *     var image = new laya.uiSys.Image("resource/uiSys/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
 	 *     image.x = 100;//设置 image 对象的属性 x 的值，用于控制 image 对象的显示位置。
 	 *     image.y = 100;//设置 image 对象的属性 y 的值，用于控制 image 对象的显示位置。
 	 *     Laya.stage.addChild(image);//将此 image 对象添加到显示列表。
@@ -70,14 +70,14 @@ package laya.ui {
 	 *         this.onInit();
 	 *     }
 	 *     private onInit(): void {
-	 *         var bg: laya.ui.Image = new laya.ui.Image("resource/ui/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
+	 *         var bg: laya.uiSys.Image = new laya.uiSys.Image("resource/uiSys/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
 	 *         bg.x = 100;//设置 bg 对象的属性 x 的值，用于控制 bg 对象的显示位置。
 	 *         bg.y = 100;//设置 bg 对象的属性 y 的值，用于控制 bg 对象的显示位置。
 	 *         bg.sizeGrid = "40,10,5,10";//设置 bg 对象的网格信息。
 	 *         bg.width = 150;//设置 bg 对象的宽度。
 	 *         bg.height = 250;//设置 bg 对象的高度。
 	 *         Laya.stage.addChild(bg);//将此 bg 对象添加到显示列表。
-	 *         var image: laya.ui.Image = new laya.ui.Image("resource/ui/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
+	 *         var image: laya.uiSys.Image = new laya.uiSys.Image("resource/uiSys/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
 	 *         image.x = 100;//设置 image 对象的属性 x 的值，用于控制 image 对象的显示位置。
 	 *         image.y = 100;//设置 image 对象的属性 y 的值，用于控制 image 对象的显示位置。
 	 *         Laya.stage.addChild(image);//将此 image 对象添加到显示列表。

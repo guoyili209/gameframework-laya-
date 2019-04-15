@@ -1,5 +1,5 @@
 package core.tool {
-    import game.character.component.CTransform;
+    import game.gameSys.character.component.CTransform;
     
     import laya.maths.Point;
     

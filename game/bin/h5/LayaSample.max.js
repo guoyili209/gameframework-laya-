@@ -504,10 +504,23 @@ var CGameObject=(function(){
 	__class(CGameObject,'core.ecs.CGameObject');
 	var __proto=CGameObject.prototype;
 	__proto.addComponent=function(comp){
-		this._pComponentVec.push(comp);
+		if(this._pComponentVec.indexOf(comp)>-1){
+			}else{
+			this._pComponentVec.push(comp);
+		}
 	}
 
-	__proto.removeComponent=function(){}
+	__proto.removeComponent=function(cls){
+		var comp;
+		for(var $each_comp in this._pComponentVec){
+			comp=this._pComponentVec[$each_comp];
+			if(Laya.__typeof(comp,cls)){
+				var index=this._pComponentVec.indexOf(comp);
+				this._pComponentVec.splice(index);
+			}
+		}
+	}
+
 	__proto.getComponent=function(cls){
 		var comp;
 		for(var $each_comp in this._pComponentVec){
@@ -1075,44 +1088,6 @@ var CView=(function(){
 })()
 
 
-//class core.tool.CLog
-var CLog=(function(){
-	function CLog(){
-		this._pDate=new Date();
-		var str=null;
-		var arr=[];
-		var str1=null;
-		var index=0;
-		if(str==null){
-			str=this.getErrorStack();
-			arr=str.split("\n");
-			if(arr && arr.length){
-				str1=arr.length >=4?arr[3]:"";
-				index=str1.lastIndexOf("\/");
-				if(index >=0){
-					str1=str1.substr(index+1);
-				}
-				if(str1.charAt(str1.length-1)==")"){
-					str1=str1.substr(0,str1.length-1);
-				}
-				str=str1.split(":")[1];
-			}
-		};
-		var ymd=this._pDate.getFullYear().toString()+"-"+this._pDate.getMonth().toString()+"-"+this._pDate.getDate().toString()+" ";
-		var hms=this._pDate.getHours().toString()+":"+this._pDate.getMinutes().toString()+":"+this._pDate.getSeconds().toString()+" ";
-		console.log(ymd+hms+"[Line:"+str+"] ");
-	}
-
-	__class(CLog,'core.tool.CLog');
-	var __proto=CLog.prototype;
-	__proto.getErrorStack=function(){
-		return new Error().stack;
-	}
-
-	return CLog;
-})()
-
-
 //class core.tool.CObjectUtil
 var CObjectUtil=(function(){
 	function CObjectUtil(){}
@@ -1137,13 +1112,131 @@ var CObjectUtil=(function(){
 })()
 
 
+//class core.tool.log.CDashBoard
+var CDashBoard=(function(){
+	function CDashBoard(container){
+		this._pageCount=0;
+		this._rootContainer=null;
+		this._boardContainer=null;
+		this._pageVec=[];
+		this._rootContainer=container;
+		this._init();
+	}
+
+	__class(CDashBoard,'core.tool.log.CDashBoard');
+	var __proto=CDashBoard.prototype;
+	__proto.addPage=function(page){
+		this._pageCount++;
+		this._pageVec.push(page);
+	}
+
+	__proto._init=function(){
+		this._boardContainer=new Sprite();
+		this._rootContainer.addChild(this._boardContainer);
+	}
+
+	__getset(0,__proto,'boardContainer',function(){
+		return this._boardContainer;
+	});
+
+	return CDashBoard;
+})()
+
+
+//class core.tool.log.CDashPage
+var CDashPage=(function(){
+	function CDashPage(dashBoard){
+		this._pageName=null;
+		this._dashBoard=null;
+		this._dashBoard=dashBoard;
+	}
+
+	__class(CDashPage,'core.tool.log.CDashPage');
+	var __proto=CDashPage.prototype;
+	__getset(0,__proto,'pageName',function(){
+		return this._pageName;
+	});
+
+	return CDashPage;
+})()
+
+
+//class core.tool.log.CLog
+var CLog=(function(){
+	function CLog(){
+		this.iLogLevel=1;
+		this._pDate=new Date();
+	}
+
+	__class(CLog,'core.tool.log.CLog');
+	var __proto=CLog.prototype;
+	__proto.traceMsg=function(msg){
+		if (this.iLogLevel <=0){
+			this._logout(msg);
+		}
+	}
+
+	__proto.normalMsg=function(msg){
+		if(this.iLogLevel<=1){
+			this._logout(msg);
+		}
+	}
+
+	__proto.warningMsg=function(msg){
+		if(this.iLogLevel<=2){
+			this._logout(msg);
+		}
+	}
+
+	__proto.errorMsg=function(msg){
+		if(this.iLogLevel<=3){
+			this._logout(msg);
+		}
+	}
+
+	__proto._logout=function(msg){
+		var str=null;
+		var arr=[];
+		var str1=null;
+		var index=0;
+		if (str==null){
+			str=this._getErrorStack();
+			arr=str.split("\n");
+			if (arr && arr.length){
+				str1=arr.length >=4 ? arr[3] :"";
+				index=str1.lastIndexOf("\/");
+				if (index >=0){
+					str1=str1.substr(index+1);
+				}
+				if (str1.charAt(str1.length-1)==")"){
+					str1=str1.substr(0,str1.length-1);
+				}
+				str=str1.split(":")[1];
+			}
+		};
+		var ymd=this._pDate.getFullYear().toString()+"-"+this._pDate.getMonth().toString()+"-"+this._pDate.getDate().toString()+" ";
+		var hms=this._pDate.getHours().toString()+":"+this._pDate.getMinutes().toString()+":"+this._pDate.getSeconds().toString()+" ";
+		console.log(ymd+hms+"[Line:"+str+"] "+msg);
+	}
+
+	__proto._getErrorStack=function(){
+		return new Error().stack;
+	}
+
+	CLog.ERROR=3;
+	CLog.WARNING=2;
+	CLog.NORMAL=1;
+	CLog.TRACE=0;
+	return CLog;
+})()
+
+
 //class game.CAppStage
 var CAppStage=(function(){
 	function CAppStage(){
 		this._sceneLayer=null;
 		this._uiLayer=null;
-		this._popupFirstLayer=null;
-		this._poppupSecondLayer=null;
+		this._logLayer=null;
 		this._init();
 	}
 
@@ -1152,36 +1245,21 @@ var CAppStage=(function(){
 	__proto._init=function(){
 		this._sceneLayer=new Sprite();
 		this._uiLayer=new Sprite();
-		this._popupFirstLayer=new Sprite();
-		this._poppupSecondLayer=new Sprite();
+		this._logLayer=new Sprite();
 		Laya.stage.addChild(this._sceneLayer);
 		Laya.stage.addChild(this._uiLayer);
-		Laya.stage.addChild(this._popupFirstLayer);
-		Laya.stage.addChild(this._poppupSecondLayer);
-	}
-
-	__proto.addChildFirstPopup=function(displayObj){
-		this._popupFirstLayer.addChild(displayObj);
-	}
-
-	__proto.addChildSecondPopup=function(displayObj){
-		this._poppupSecondLayer.addChild(displayObj);
+		Laya.stage.addChild(this._logLayer);
 	}
 
 	__getset(0,__proto,'sceneLayer',function(){
 		return this._sceneLayer;
 	});
 
+	__getset(0,__proto,'logLayer',function(){
+		return this._logLayer;
+	});
+
 	return CAppStage;
-})()
-
-
-//class game.enums.EComponentType
-var EComponentType=(function(){
-	function EComponentType(){}
-	__class(EComponentType,'game.enums.EComponentType');
-	EComponentType.NONE=0;
-	return EComponentType;
 })()
 
 
@@ -1194,22 +1272,43 @@ var ESystemTag=(function(){
 })()
 
 
-//class game.loader.ELoaderSystemEvent
+//class game.gameSys.enums.EComponentType
+var EComponentType=(function(){
+	function EComponentType(){}
+	__class(EComponentType,'game.gameSys.enums.EComponentType');
+	EComponentType.NONE=0;
+	return EComponentType;
+})()
+
+
+//class game.gameSys.loader.ELoaderSystemEvent
 var ELoaderSystemEvent=(function(){
 	function ELoaderSystemEvent(){}
-	__class(ELoaderSystemEvent,'game.loader.ELoaderSystemEvent');
+	__class(ELoaderSystemEvent,'game.gameSys.loader.ELoaderSystemEvent');
 	ELoaderSystemEvent.ASSETS_LOAD_COMPLETE="assetsLoadComplete";
 	return ELoaderSystemEvent;
 })()
 
 
-//class game.table.CTableData
+//class game.gameSys.table.CTableData
 var CTableData=(function(){
 	function CTableData(){}
-	__class(CTableData,'game.table.CTableData');
+	__class(CTableData,'game.gameSys.table.CTableData');
 	var __proto=CTableData.prototype;
-	__proto.getTableByID=function(key){}
+	__proto.getTableByID=function(key){
+		return "";
+	}
+
 	return CTableData;
+})()
+
+
+//class game.gameSys.table.ETableName
+var ETableName=(function(){
+	function ETableName(){}
+	__class(ETableName,'game.gameSys.table.ETableName');
+	ETableName.demo="data/demo.csv";
+	return ETableName;
 })()
 
 
@@ -9169,7 +9268,7 @@ var ResourceManager=(function(){
 /**
 *@private
 */
-//class laya.system.System
+//class laya._system.System
 var System=(function(){
 	function System(){}
 	__class(System,'laya.system.System');
@@ -17333,10 +17432,15 @@ var CSystem=(function(_super){
 		this.facade=null;
 		CSystem.__super.call(this);
 		this.facade=facade;
+		this._init();
 	}
 
 	__class(CSystem,'core.ecs.CSystem',_super);
 	var __proto=CSystem.prototype;
+	__proto._init=function(){
+		throw new Error("_init()没有被覆写:"+avmplus.getQualifiedClassName(this));
+	}
+
 	__proto.exit=function(){
 		throw new Error("exit()没有被覆写:"+avmplus.getQualifiedClassName(this));
 	}
@@ -17653,6 +17757,7 @@ var CAppFacade=(function(_super){
 	}
 
 	__proto._initGameSystem=function(){
+		this.addSystem(new CLogSystem(this));
 		this.addSystem(new CTableBaseSystem(this));
 		this.addSystem(new CSceneSystem(this));
 		this.addSystem(new CUISystem(this));
@@ -17704,7 +17809,7 @@ var CAppFacade=(function(_super){
 })(EventDispatcher)
 
 
-//class game.character.component.CTransform extends core.ecs.CComponent
+//class game.gameSys.character.component.CTransform extends core.ecs.CComponent
 var CTransform=(function(_super){
 	function CTransform(x,y,z){
 		this._x=0;
@@ -17719,7 +17824,7 @@ var CTransform=(function(_super){
 		this._z=z;
 	}
 
-	__class(CTransform,'game.character.component.CTransform',_super);
+	__class(CTransform,'game.gameSys.character.component.CTransform',_super);
 	var __proto=CTransform.prototype;
 	__getset(0,__proto,'x',function(){
 		return this._x;
@@ -17743,13 +17848,13 @@ var CTransform=(function(_super){
 })(CComponent)
 
 
-//class game.ui.mvc.CUIControlHandler extends core.mvc.CController
+//class game.uiSys.root.mvc.CUIControl extends core.mvc.CController
 var CUIControlHandler=(function(_super){
 	function CUIControlHandler(system){
 		CUIControlHandler.__super.call(this,system);
 	}
 
-	__class(CUIControlHandler,'game.ui.mvc.CUIControlHandler',_super);
+	__class(CUIControlHandler,'game.uiSys.root.mvc.CUIControl',_super);
 	var __proto=CUIControlHandler.prototype;
 	__proto.init=function(){}
 	__proto.registerSocket=function(){
@@ -17765,13 +17870,13 @@ var CUIControlHandler=(function(_super){
 })(CController)
 
 
-//class game.ui.mvc.CUIModelHandler extends core.mvc.CModel
+//class game.uiSys.root.mvc.CUIModel extends core.mvc.CModel
 var CUIModelHandler=(function(_super){
 	function CUIModelHandler(sys){
 		CUIModelHandler.__super.call(this,sys);
 	}
 
-	__class(CUIModelHandler,'game.ui.mvc.CUIModelHandler',_super);
+	__class(CUIModelHandler,'game.uiSys.root.mvc.CUIModel',_super);
 	var __proto=CUIModelHandler.prototype;
 	__proto.init=function(){}
 	__proto.setData=function(data){
@@ -17782,17 +17887,16 @@ var CUIModelHandler=(function(_super){
 })(CModel)
 
 
-//class game.ui.mvc.CUIViewHandler extends core.mvc.CView
+//class game.uiSys.root.mvc.CUIView extends core.mvc.CView
 var CUIViewHandler=(function(_super){
 	function CUIViewHandler(sys){
 		CUIViewHandler.__super.call(this,sys);
 	}
 
-	__class(CUIViewHandler,'game.ui.mvc.CUIViewHandler',_super);
+	__class(CUIViewHandler,'game.uiSys.root.mvc.CUIView',_super);
 	var __proto=CUIViewHandler.prototype;
 	__proto.assetsComplete=function(){
 		var demoUI=new DemoUI();
-		this.system.facade.appStage.addChildFirstPopup(demoUI);
 		demoUI.btn1.on("click",this,this._activateSystem,[demoUI.btn1.name]);
 		this._addListener();
 	}
@@ -24085,7 +24189,7 @@ var MeshTexture=(function(_super){
 })(Mesh2D)
 
 
-//class core.socket.CCustomSocket extends laya.net.Socket
+//class core._socket.CCustomSocket extends laya.net.Socket
 var CCustomSocket=(function(_super){
 	function CCustomSocket(host,port,byteClass){
 		this._pCashData=null;
@@ -24207,14 +24311,13 @@ var CCustomSocket=(function(_super){
 })(Socket)
 
 
-//class game.loader.CLoaderSystem extends core.ecs.CSystem
+//class game.gameSys.loader.CLoaderSystem extends core.ecs.CSystem
 var CLoaderSystem=(function(_super){
 	function CLoaderSystem(facade){
 		CLoaderSystem.__super.call(this,facade);
-		this._init();
 	}
 
-	__class(CLoaderSystem,'game.loader.CLoaderSystem',_super);
+	__class(CLoaderSystem,'game.gameSys.loader.CLoaderSystem',_super);
 	var __proto=CLoaderSystem.prototype;
 	__proto._init=function(){
 		var urlArr=[];
@@ -24230,16 +24333,36 @@ var CLoaderSystem=(function(_super){
 })(CSystem)
 
 
-//class game.scene.CSceneSystem extends core.ecs.CSystem
+//class game.gameSys.log.CLogSystem extends core.ecs.CSystem
+var CLogSystem=(function(_super){
+	function CLogSystem(facade){
+		CLogSystem.__super.call(this,facade);
+	}
+
+	__class(CLogSystem,'game.gameSys.log.CLogSystem',_super);
+	var __proto=CLogSystem.prototype;
+	__proto._init=function(){
+		var logLayer=this.facade.appStage.logLayer;
+		this.addBean(new CDashBoard(logLayer));
+	}
+
+	__proto.traceMsg=function(){}
+	__proto.normalMsg=function(){}
+	__proto.warningMsg=function(){}
+	__proto.errorMsg=function(msg){}
+	return CLogSystem;
+})(CSystem)
+
+
+//class game.gameSys.scene.CSceneSystem extends core.ecs.CSystem
 var CSceneSystem=(function(_super){
 	function CSceneSystem(facade){
 		this._iEntityConut=100;
 		this._entity=null;
 		CSceneSystem.__super.call(this,facade);
-		this._init();
 	}
 
-	__class(CSceneSystem,'game.scene.CSceneSystem',_super);
+	__class(CSceneSystem,'game.gameSys.scene.CSceneSystem',_super);
 	var __proto=CSceneSystem.prototype;
 	__proto._init=function(){}
 	// }
@@ -24264,26 +24387,21 @@ var CSceneSystem=(function(_super){
 })(CSystem)
 
 
-//class game.table.CTableBaseSystem extends core.ecs.CSystem
+//class game.gameSys.table.CTableBaseSystem extends core.ecs.CSystem
 var CTableBaseSystem=(function(_super){
 	function CTableBaseSystem(facade){
+		this._tableDic=null;
 		CTableBaseSystem.__super.call(this,facade);
-		this._init();
 	}
 
-	__class(CTableBaseSystem,'game.table.CTableBaseSystem',_super);
+	__class(CTableBaseSystem,'game.gameSys.table.CTableBaseSystem',_super);
 	var __proto=CTableBaseSystem.prototype;
 	__proto._init=function(){
+		this._tableDic=new Dictionary();
 		this.addBean(new CTableData());
 		this._initComplete();
 	}
 
-	/**
-	*id,图标名称
-	*id,systemTag
-	*1,BTN1
-	*2,BTN2
-	**/
 	__proto._initComplete=function(){
 		var str=Laya.loader.getRes("data/demo.csv");
 		var arr=str.split("\r\n");
@@ -24303,25 +24421,25 @@ var CTableBaseSystem=(function(_super){
 			}
 			dataObjArr.push(obj);
 		}
-		console.log(dataObjArr);
+		this._tableDic.set("data/demo.csv",dataObjArr);
 	}
 
 	__proto.getTable=function(tableName){
-		return null;
+		return this._tableDic.get(tableName);
 	}
 
 	return CTableBaseSystem;
 })(CSystem)
 
 
-//class game.ui.CUISystem extends core.ecs.CSystem
+//class game.uiSys.root.CUISystem extends core.ecs.CSystem
 var CUISystem=(function(_super){
 	function CUISystem(facade){
 		CUISystem.__super.call(this,facade);
-		this._init();
+		this._$2__init();
 	}
 
-	__class(CUISystem,'game.ui.CUISystem',_super);
+	__class(CUISystem,'game.uiSys.root.CUISystem',_super);
 	var __proto=CUISystem.prototype;
 	Laya.imps(__proto,{"core.IBundleSystem":true})
 	__proto.setActivated=function(bool){
@@ -24332,7 +24450,7 @@ var CUISystem=(function(_super){
 		}
 	}
 
-	__proto._init=function(){
+	__proto._$2__init=function(){
 		this.addBean(new CUIModelHandler(this));
 		this.addBean(new CUIControlHandler(this));
 		this.addBean(new CUIViewHandler(this));
@@ -24345,7 +24463,8 @@ var CUISystem=(function(_super){
 	}
 
 	__getset(0,__proto,'systemTag',function(){
-		return "UISystemTag";
+		(this.facade.getSystem(CLogSystem)).errorMsg(avmplus.getQualifiedClassName(this)+":没有设置systemTag");
+		return "";
 	});
 
 	return CUISystem;
@@ -24377,7 +24496,7 @@ var CUISystem=(function(_super){
 		*private function onInit():void
 		*{
 			*sprite=new Sprite();//创建一个 Sprite 类的实例对象 sprite 。
-			*sprite.loadImage("resource/ui/bg.png");//加载并显示图片。
+			*sprite.loadImage("resource/uiSys/bg.png");//加载并显示图片。
 			*sprite.x=200;//设置 sprite 对象相对于父容器的水平方向坐标值。
 			*sprite.y=200;//设置 sprite 对象相对于父容器的垂直方向坐标值。
 			*sprite.pivotX=0;//设置 sprite 对象的水平方法轴心点坐标。
@@ -24421,7 +24540,7 @@ var CUISystem=(function(_super){
 *function onInit()
 *{
 	*sprite=new laya.display.Sprite();//创建一个 Sprite 类的实例对象 sprite 。
-	*sprite.loadImage("resource/ui/bg.png");//加载并显示图片。
+	*sprite.loadImage("resource/uiSys/bg.png");//加载并显示图片。
 	*sprite.x=200;//设置 sprite 对象相对于父容器的水平方向坐标值。
 	*sprite.y=200;//设置 sprite 对象相对于父容器的垂直方向坐标值。
 	*sprite.pivotX=0;//设置 sprite 对象的水平方法轴心点坐标。
@@ -24462,7 +24581,7 @@ var CUISystem=(function(_super){
 		*}
 	*private onInit():void {
 		*this.sprite=new Sprite();//创建一个 Sprite 类的实例对象 sprite 。
-		*this.sprite.loadImage("resource/ui/bg.png");//加载并显示图片。
+		*this.sprite.loadImage("resource/uiSys/bg.png");//加载并显示图片。
 		*this.sprite.x=200;//设置 sprite 对象相对于父容器的水平方向坐标值。
 		*this.sprite.y=200;//设置 sprite 对象相对于父容器的垂直方向坐标值。
 		*this.sprite.pivotX=0;//设置 sprite 对象的水平方法轴心点坐标。
@@ -30836,7 +30955,7 @@ var AutoFillRec=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>Button</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.Button;
+	*import laya.uiSys.Button;
 	*import laya.utils.Handler;
 	*public class Button_Example
 	*{
@@ -30844,12 +30963,12 @@ var AutoFillRec=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load("resource/ui/button.png",Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load("resource/uiSys/button.png",Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*trace("资源加载完成！");
-			*var button:Button=new Button("resource/ui/button.png","label");//创建一个 Button 类的实例对象 button ,并传入它的皮肤。
+			*var button:Button=new Button("resource/uiSys/button.png","label");//创建一个 Button 类的实例对象 button ,并传入它的皮肤。
 			*button.x=100;//设置 button 对象的属性 x 的值，用于控制 button 对象的显示位置。
 			*button.y=100;//设置 button 对象的属性 y 的值，用于控制 button 对象的显示位置。
 			*button.clickHandler=new Handler(this,onClickButton,[button]);//设置 button 的点击事件处理器。
@@ -30864,11 +30983,11 @@ var AutoFillRec=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-*Laya.loader.load("resource/ui/button.png",laya.utils.Handler.create(this,loadComplete));//加载资源
+*Laya.loader.load("resource/uiSys/button.png",laya.utils.Handler.create(this,loadComplete));//加载资源
 *function loadComplete()
 *{
 	*console.log("资源加载完成！");
-	*var button=new laya.ui.Button("resource/ui/button.png","label");//创建一个 Button 类的实例对象 button ,传入它的皮肤skin和标签label。
+	*var button=new laya.uiSys.Button("resource/uiSys/button.png","label");//创建一个 Button 类的实例对象 button ,传入它的皮肤skin和标签label。
 	*button.x=100;//设置 button 对象的属性 x 的值，用于控制 button 对象的显示位置。
 	*button.y=100;//设置 button 对象的属性 y 的值，用于控制 button 对象的显示位置。
 	*button.clickHandler=laya.utils.Handler.create(this,onClickButton,[button],false);//设置 button 的点击事件处理函数。
@@ -30879,18 +30998,18 @@ var AutoFillRec=(function(_super){
 	*console.log("按钮被点击了。",button);
 	*}
 *@example
-*import Button=laya.ui.Button;
+*import Button=laya.uiSys.Button;
 *import Handler=laya.utils.Handler;
 *class Button_Example{
 	*constructor()
 	*{
 		*Laya.init(640,800);
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load("resource/ui/button.png",laya.utils.Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load("resource/uiSys/button.png",laya.utils.Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete()
 	*{
-		*var button:Button=new Button("resource/ui/button.png","label");//创建一个 Button 类的实例对象 button ,并传入它的皮肤。
+		*var button:Button=new Button("resource/uiSys/button.png","label");//创建一个 Button 类的实例对象 button ,并传入它的皮肤。
 		*button.x=100;//设置 button 对象的属性 x 的值，用于控制 button 对象的显示位置。
 		*button.y=100;//设置 button 对象的属性 y 的值，用于控制 button 对象的显示位置。
 		*button.clickHandler=new Handler(this,this.onClickButton,[button]);//设置 button 的点击事件处理器。
@@ -30912,7 +31031,7 @@ var Button=(function(_super){
 		*@example
 		*package
 		*{
-			*import laya.ui.Button;
+			*import laya.uiSys.Button;
 			*import laya.utils.Handler;
 			*public class Button_toggle
 			*{
@@ -30920,12 +31039,12 @@ var Button=(function(_super){
 				*{
 					*Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 					*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-					*Laya.loader.load("resource/ui/button.png",Handler.create(this,onLoadComplete));
+					*Laya.loader.load("resource/uiSys/button.png",Handler.create(this,onLoadComplete));
 					*}
 				*private function onLoadComplete():void
 				*{
 					*trace("资源加载完成！");
-					*var button:Button=new Button("resource/ui/button.png","label");//创建一个 Button 实例对象 button ,传入它的皮肤skin和标签label。
+					*var button:Button=new Button("resource/uiSys/button.png","label");//创建一个 Button 实例对象 button ,传入它的皮肤skin和标签label。
 					*button.x=100;//设置 button 对象的属性 x 的值，用于控制 button 对象的显示位置。
 					*button.y=100;//设置 button 对象的属性 y 的值，用于控制 button 对象的显示位置。
 					*button.toggle=true;//设置 button 对象为切换按钮。
@@ -30941,11 +31060,11 @@ var Button=(function(_super){
 		*@example
 		*Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load("resource/ui/button.png",laya.utils.Handler.create(this,loadComplete));//加载资源
+		*Laya.loader.load("resource/uiSys/button.png",laya.utils.Handler.create(this,loadComplete));//加载资源
 		*function loadComplete()
 		*{
 			*console.log("资源加载完成！");
-			*var button=new laya.ui.Button("resource/ui/button.png","label");//创建一个 Button 类的实例对象 button ,传入它的皮肤skin和标签label。
+			*var button=new laya.uiSys.Button("resource/uiSys/button.png","label");//创建一个 Button 类的实例对象 button ,传入它的皮肤skin和标签label。
 			*button.x=100;//设置 button 对象的属性 x 的值，用于控制 button 对象的显示位置。
 			*button.y=100;//设置 button 对象的属性 y 的值，用于控制 button 对象的显示位置。
 			*button.toggle=true;//设置 button 对象为切换按钮。
@@ -30962,7 +31081,7 @@ var Button=(function(_super){
 		*Laya.loader.load("button.png",null,null,null,null,null);//加载资源
 		*function loadComplete(){
 			*console.log("资源加载完成！");
-			*var button:laya.ui.Button=new laya.ui.Button("button.png","label");//创建一个 Button 类的实例对象 button ,传入它的皮肤skin和标签label。
+			*var button:laya.uiSys.Button=new laya.uiSys.Button("button.png","label");//创建一个 Button 类的实例对象 button ,传入它的皮肤skin和标签label。
 			*button.x=100;//设置 button 对象的属性 x 的值，用于控制 button 对象的显示位置。
 			*button.y=100;//设置 button 对象的属性 y 的值，用于控制 button 对象的显示位置。
 			*button.toggle=true;//设置 button 对象为切换按钮。
@@ -31441,7 +31560,7 @@ var Button=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>Clip</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.Clip;
+	*import laya.uiSys.Clip;
 	*public class Clip_Example
 	*{
 		*private var clip:Clip;
@@ -31453,7 +31572,7 @@ var Button=(function(_super){
 			*}
 		*private function onInit():void
 		*{
-			*clip=new Clip("resource/ui/clip_num.png",10,1);//创建一个 Clip 类的实例对象 clip ,传入它的皮肤skin和横向分割数量、竖向分割数量。
+			*clip=new Clip("resource/uiSys/clip_num.png",10,1);//创建一个 Clip 类的实例对象 clip ,传入它的皮肤skin和横向分割数量、竖向分割数量。
 			*clip.autoPlay=true;//设置 clip 动画自动播放。
 			*clip.interval=100;//设置 clip 动画的播放时间间隔。
 			*clip.x=100;//设置 clip 对象的属性 x 的值，用于控制 clip 对象的显示位置。
@@ -31477,10 +31596,10 @@ var Button=(function(_super){
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
 *var clip;
-*Laya.loader.load("resource/ui/clip_num.png",laya.utils.Handler.create(this,loadComplete));//加载资源
+*Laya.loader.load("resource/uiSys/clip_num.png",laya.utils.Handler.create(this,loadComplete));//加载资源
 *function loadComplete(){
 	*console.log("资源加载完成！");
-	*clip=new laya.ui.Clip("resource/ui/clip_num.png",10,1);//创建一个 Clip 类的实例对象 clip ,传入它的皮肤skin和横向分割数量、竖向分割数量。
+	*clip=new laya.uiSys.Clip("resource/uiSys/clip_num.png",10,1);//创建一个 Clip 类的实例对象 clip ,传入它的皮肤skin和横向分割数量、竖向分割数量。
 	*clip.autoPlay=true;//设置 clip 动画自动播放。
 	*clip.interval=100;//设置 clip 动画的播放时间间隔。
 	*clip.x=100;//设置 clip 对象的属性 x 的值，用于控制 clip 对象的显示位置。
@@ -31499,7 +31618,7 @@ var Button=(function(_super){
 		*}
 	*}
 *@example
-*import Clip=laya.ui.Clip;
+*import Clip=laya.uiSys.Clip;
 *import Handler=laya.utils.Handler;
 *class Clip_Example {
 	*private clip:Clip;
@@ -31509,7 +31628,7 @@ var Button=(function(_super){
 		*this.onInit();
 		*}
 	*private onInit():void {
-		*this.clip=new Clip("resource/ui/clip_num.png",10,1);//创建一个 Clip 类的实例对象 clip ,传入它的皮肤skin和横向分割数量、竖向分割数量。
+		*this.clip=new Clip("resource/uiSys/clip_num.png",10,1);//创建一个 Clip 类的实例对象 clip ,传入它的皮肤skin和横向分割数量、竖向分割数量。
 		*this.clip.autoPlay=true;//设置 clip 动画自动播放。
 		*this.clip.interval=100;//设置 clip 动画的播放时间间隔。
 		*this.clip.x=100;//设置 clip 对象的属性 x 的值，用于控制 clip 对象的显示位置。
@@ -31883,7 +32002,7 @@ var Clip=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>ColorPicker</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.ColorPicker;
+	*import laya.uiSys.ColorPicker;
 	*import laya.utils.Handler;
 	*public class ColorPicker_Example
 	*{
@@ -31891,13 +32010,13 @@ var Clip=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load("resource/ui/color.png",Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load("resource/uiSys/color.png",Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*trace("资源加载完成！");
 			*var colorPicket:ColorPicker=new ColorPicker();//创建一个 ColorPicker 类的实例对象 colorPicket 。
-			*colorPicket.skin="resource/ui/color.png";//设置 colorPicket 的皮肤。
+			*colorPicket.skin="resource/uiSys/color.png";//设置 colorPicket 的皮肤。
 			*colorPicket.x=100;//设置 colorPicket 对象的属性 x 的值，用于控制 colorPicket 对象的显示位置。
 			*colorPicket.y=100;//设置 colorPicket 对象的属性 y 的值，用于控制 colorPicket 对象的显示位置。
 			*colorPicket.changeHandler=new Handler(this,onChangeColor,[colorPicket]);//设置 colorPicket 的颜色改变回调函数。
@@ -31912,12 +32031,12 @@ var Clip=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*Laya.loader.load("resource/ui/color.png",laya.utils.Handler.create(this,loadComplete));//加载资源
+*Laya.loader.load("resource/uiSys/color.png",laya.utils.Handler.create(this,loadComplete));//加载资源
 *function loadComplete()
 *{
 	*console.log("资源加载完成！");
-	*var colorPicket=new laya.ui.ColorPicker();//创建一个 ColorPicker 类的实例对象 colorPicket 。
-	*colorPicket.skin="resource/ui/color.png";//设置 colorPicket 的皮肤。
+	*var colorPicket=new laya.uiSys.ColorPicker();//创建一个 ColorPicker 类的实例对象 colorPicket 。
+	*colorPicket.skin="resource/uiSys/color.png";//设置 colorPicket 的皮肤。
 	*colorPicket.x=100;//设置 colorPicket 对象的属性 x 的值，用于控制 colorPicket 对象的显示位置。
 	*colorPicket.y=100;//设置 colorPicket 对象的属性 y 的值，用于控制 colorPicket 对象的显示位置。
 	*colorPicket.changeHandler=laya.utils.Handler.create(this,onChangeColor,[colorPicket],false);//设置 colorPicket 的颜色改变回调函数。
@@ -31928,18 +32047,18 @@ var Clip=(function(_super){
 	*console.log("当前选择的颜色： "+colorPicket.selectedColor);
 	*}
 *@example
-*import ColorPicker=laya.ui.ColorPicker;
+*import ColorPicker=laya.uiSys.ColorPicker;
 *import Handler=laya.utils.Handler;
 *class ColorPicker_Example {
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load("resource/ui/color.png",Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load("resource/uiSys/color.png",Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*console.log("资源加载完成！");
 		*var colorPicket:ColorPicker=new ColorPicker();//创建一个 ColorPicker 类的实例对象 colorPicket 。
-		*colorPicket.skin="resource/ui/color.png";//设置 colorPicket 的皮肤。
+		*colorPicket.skin="resource/uiSys/color.png";//设置 colorPicket 的皮肤。
 		*colorPicket.x=100;//设置 colorPicket 对象的属性 x 的值，用于控制 colorPicket 对象的显示位置。
 		*colorPicket.y=100;//设置 colorPicket 对象的属性 y 的值，用于控制 colorPicket 对象的显示位置。
 		*colorPicket.changeHandler=new Handler(this,this.onChangeColor,[colorPicket]);//设置 colorPicket 的颜色改变回调函数。
@@ -32291,7 +32410,7 @@ var ColorPicker=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>ComboBox</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.ComboBox;
+	*import laya.uiSys.ComboBox;
 	*import laya.utils.Handler;
 	*public class ComboBox_Example
 	*{
@@ -32299,12 +32418,12 @@ var ColorPicker=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load("resource/ui/button.png",Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load("resource/uiSys/button.png",Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*trace("资源加载完成！");
-			*var comboBox:ComboBox=new ComboBox("resource/ui/button.png","item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
+			*var comboBox:ComboBox=new ComboBox("resource/uiSys/button.png","item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
 			*comboBox.x=100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 			*comboBox.y=100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 			*comboBox.selectHandler=new Handler(this,onSelect);//设置 comboBox 选择项改变时执行的处理器。
@@ -32319,10 +32438,10 @@ var ColorPicker=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高。
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-*Laya.loader.load("resource/ui/button.png",laya.utils.Handler.create(this,loadComplete));//加载资源
+*Laya.loader.load("resource/uiSys/button.png",laya.utils.Handler.create(this,loadComplete));//加载资源
 *function loadComplete(){
 	*console.log("资源加载完成！");
-	*var comboBox=new laya.ui.ComboBox("resource/ui/button.png","item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
+	*var comboBox=new laya.uiSys.ComboBox("resource/uiSys/button.png","item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
 	*comboBox.x=100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 	*comboBox.y=100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 	*comboBox.selectHandler=new laya.utils.Handler(this,onSelect);//设置 comboBox 选择项改变时执行的处理器。
@@ -32333,17 +32452,17 @@ var ColorPicker=(function(_super){
 	*console.log("当前选中的项对象索引： ",index);
 	*}
 *@example
-*import ComboBox=laya.ui.ComboBox;
+*import ComboBox=laya.uiSys.ComboBox;
 *import Handler=laya.utils.Handler;
 *class ComboBox_Example {
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load("resource/ui/button.png",Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load("resource/uiSys/button.png",Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*console.log("资源加载完成！");
-		*var comboBox:ComboBox=new ComboBox("resource/ui/button.png","item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
+		*var comboBox:ComboBox=new ComboBox("resource/uiSys/button.png","item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
 		*comboBox.x=100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 		*comboBox.y=100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 		*comboBox.selectHandler=new Handler(this,this.onSelect);//设置 comboBox 选择项改变时执行的处理器。
@@ -33727,7 +33846,7 @@ var Slider=(function(_super){
 *@example <caption>以下示例代码，创建了一个新的 <code>Image</code> 实例，设置了它的皮肤、位置信息，并添加到舞台上。</caption>
 *package
 *{
-	*import laya.ui.Image;
+	*import laya.uiSys.Image;
 	*public class Image_Example
 	*{
 		*public function Image_Example()
@@ -33738,14 +33857,14 @@ var Slider=(function(_super){
 			*}
 		*private function onInit():void
 		*{
-			*var bg:Image=new Image("resource/ui/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
+			*var bg:Image=new Image("resource/uiSys/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
 			*bg.x=100;//设置 bg 对象的属性 x 的值，用于控制 bg 对象的显示位置。
 			*bg.y=100;//设置 bg 对象的属性 y 的值，用于控制 bg 对象的显示位置。
 			*bg.sizeGrid="40,10,5,10";//设置 bg 对象的网格信息。
 			*bg.width=150;//设置 bg 对象的宽度。
 			*bg.height=250;//设置 bg 对象的高度。
 			*Laya.stage.addChild(bg);//将此 bg 对象添加到显示列表。
-			*var image:Image=new Image("resource/ui/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
+			*var image:Image=new Image("resource/uiSys/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
 			*image.x=100;//设置 image 对象的属性 x 的值，用于控制 image 对象的显示位置。
 			*image.y=100;//设置 image 对象的属性 y 的值，用于控制 image 对象的显示位置。
 			*Laya.stage.addChild(image);//将此 image 对象添加到显示列表。
@@ -33757,14 +33876,14 @@ var Slider=(function(_super){
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
 *onInit();
 *function onInit(){
-	*var bg=new laya.ui.Image("resource/ui/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
+	*var bg=new laya.uiSys.Image("resource/uiSys/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
 	*bg.x=100;//设置 bg 对象的属性 x 的值，用于控制 bg 对象的显示位置。
 	*bg.y=100;//设置 bg 对象的属性 y 的值，用于控制 bg 对象的显示位置。
 	*bg.sizeGrid="40,10,5,10";//设置 bg 对象的网格信息。
 	*bg.width=150;//设置 bg 对象的宽度。
 	*bg.height=250;//设置 bg 对象的高度。
 	*Laya.stage.addChild(bg);//将此 bg 对象添加到显示列表。
-	*var image=new laya.ui.Image("resource/ui/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
+	*var image=new laya.uiSys.Image("resource/uiSys/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
 	*image.x=100;//设置 image 对象的属性 x 的值，用于控制 image 对象的显示位置。
 	*image.y=100;//设置 image 对象的属性 y 的值，用于控制 image 对象的显示位置。
 	*Laya.stage.addChild(image);//将此 image 对象添加到显示列表。
@@ -33777,14 +33896,14 @@ var Slider=(function(_super){
 		*this.onInit();
 		*}
 	*private onInit():void {
-		*var bg:laya.ui.Image=new laya.ui.Image("resource/ui/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
+		*var bg:laya.uiSys.Image=new laya.uiSys.Image("resource/uiSys/bg.png");//创建一个 Image 类的实例对象 bg ,并传入它的皮肤。
 		*bg.x=100;//设置 bg 对象的属性 x 的值，用于控制 bg 对象的显示位置。
 		*bg.y=100;//设置 bg 对象的属性 y 的值，用于控制 bg 对象的显示位置。
 		*bg.sizeGrid="40,10,5,10";//设置 bg 对象的网格信息。
 		*bg.width=150;//设置 bg 对象的宽度。
 		*bg.height=250;//设置 bg 对象的高度。
 		*Laya.stage.addChild(bg);//将此 bg 对象添加到显示列表。
-		*var image:laya.ui.Image=new laya.ui.Image("resource/ui/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
+		*var image:laya.uiSys.Image=new laya.uiSys.Image("resource/uiSys/image.png");//创建一个 Image 类的实例对象 image ,并传入它的皮肤。
 		*image.x=100;//设置 image 对象的属性 x 的值，用于控制 image 对象的显示位置。
 		*image.y=100;//设置 image 对象的属性 y 的值，用于控制 image 对象的显示位置。
 		*Laya.stage.addChild(image);//将此 image 对象添加到显示列表。
@@ -33936,7 +34055,7 @@ var Image=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>Label</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.Label;
+	*import laya.uiSys.Label;
 	*public class Label_Example
 	*{
 		*public function Label_Example()
@@ -33977,7 +34096,7 @@ var Image=(function(_super){
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
 *onInit();
 *function onInit(){
-	*var label=new laya.ui.Label();//创建一个 Label 类的实例对象 label 。
+	*var label=new laya.uiSys.Label();//创建一个 Label 类的实例对象 label 。
 	*label.font="Arial";//设置 label 的字体。
 	*label.bold=true;//设置 label 显示为粗体。
 	*label.leading=4;//设置 label 的行间距。
@@ -33990,7 +34109,7 @@ var Image=(function(_super){
 	*label.width=300;//设置 label 的宽度。
 	*label.height=200;//设置 label 的高度。
 	*Laya.stage.addChild(label);//将 label 添加到显示列表。
-	*var passwordLabel=new laya.ui.Label("请原谅我，我不想被人看到我心里话。");//创建一个 Label 类的实例对象 passwordLabel 。
+	*var passwordLabel=new laya.uiSys.Label("请原谅我，我不想被人看到我心里话。");//创建一个 Label 类的实例对象 passwordLabel 。
 	*passwordLabel.asPassword=true;//设置 passwordLabel 的显示反式为密码显示。
 	*passwordLabel.x=100;//设置 passwordLabel 对象的属性 x 的值，用于控制 passwordLabel 对象的显示位置。
 	*passwordLabel.y=350;//设置 passwordLabel 对象的属性 y 的值，用于控制 passwordLabel 对象的显示位置。
@@ -34001,7 +34120,7 @@ var Image=(function(_super){
 	*Laya.stage.addChild(passwordLabel);//将 passwordLabel 添加到显示列表。
 	*}
 *@example
-*import Label=laya.ui.Label;
+*import Label=laya.uiSys.Label;
 *class Label_Example {
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高。
@@ -34317,7 +34436,7 @@ var Label=(function(_super){
 *@example <caption>以下示例代码，创建了一个新的 <code>ProgressBar</code> 实例，设置了它的皮肤、位置、宽高、网格等信息，并添加到舞台上。</caption>
 *package
 *{
-	*import laya.ui.ProgressBar;
+	*import laya.uiSys.ProgressBar;
 	*import laya.utils.Handler;
 	*public class ProgressBar_Example
 	*{
@@ -34326,11 +34445,11 @@ var Label=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/progress.png","resource/ui/progress$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load(["resource/uiSys/progress.png","resource/uiSys/progress$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
-			*progressBar=new ProgressBar("resource/ui/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
+			*progressBar=new ProgressBar("resource/uiSys/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
 			*progressBar.x=100;//设置 progressBar 对象的属性 x 的值，用于控制 progressBar 对象的显示位置。
 			*progressBar.y=100;//设置 progressBar 对象的属性 y 的值，用于控制 progressBar 对象的显示位置。
 			*progressBar.value=0.3;//设置 progressBar 的进度值。
@@ -34355,11 +34474,11 @@ var Label=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*var res=["resource/ui/progress.png","resource/ui/progress$bar.png"];
+*var res=["resource/uiSys/progress.png","resource/uiSys/progress$bar.png"];
 *Laya.loader.load(res,laya.utils.Handler.create(this,onLoadComplete));//加载资源。
 *function onLoadComplete()
 *{
-	*progressBar=new laya.ui.ProgressBar("resource/ui/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
+	*progressBar=new laya.uiSys.ProgressBar("resource/uiSys/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
 	*progressBar.x=100;//设置 progressBar 对象的属性 x 的值，用于控制 progressBar 对象的显示位置。
 	*progressBar.y=100;//设置 progressBar 对象的属性 y 的值，用于控制 progressBar 对象的显示位置。
 	*progressBar.value=0.3;//设置 progressBar 的进度值。
@@ -34380,17 +34499,17 @@ var Label=(function(_super){
 	*console.log("进度发生改变： value=" ,value);
 	*}
 *@example
-*import ProgressBar=laya.ui.ProgressBar;
+*import ProgressBar=laya.uiSys.ProgressBar;
 *import Handler=laya.utils.Handler;
 *class ProgressBar_Example {
 	*private progressBar:ProgressBar;
 	*public ProgressBar_Example(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/progress.png","resource/ui/progress$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load(["resource/uiSys/progress.png","resource/uiSys/progress$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
-		*this.progressBar=new ProgressBar("resource/ui/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
+		*this.progressBar=new ProgressBar("resource/uiSys/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
 		*this.progressBar.x=100;//设置 progressBar 对象的属性 x 的值，用于控制 progressBar 对象的显示位置。
 		*this.progressBar.y=100;//设置 progressBar 对象的属性 y 的值，用于控制 progressBar 对象的显示位置。
 		*this.progressBar.value=0.3;//设置 progressBar 的进度值。
@@ -36210,7 +36329,7 @@ var View=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>List</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.List;
+	*import laya.uiSys.List;
 	*import laya.utils.Handler;
 	*public class List_Example
 	*{
@@ -36218,7 +36337,7 @@ var View=(function(_super){
 		*{
 			*Laya.init(640,800,"false");//设置游戏画布宽高、渲染模式。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png"],Handler.create(this,onLoadComplete));
+			*Laya.loader.load(["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png"],Handler.create(this,onLoadComplete));
 			*}
 		*private function onLoadComplete():void
 		*{
@@ -36231,7 +36350,7 @@ var View=(function(_super){
 			*list.itemRender=Item;//设置 list 的单元格渲染器。
 			*list.repeatX=1;//设置 list 的水平方向单元格数量。
 			*list.repeatY=10;//设置 list 的垂直方向单元格数量。
-			*list.vScrollBarSkin="resource/ui/vscroll.png";//设置 list 的垂直方向滚动条皮肤。
+			*list.vScrollBarSkin="resource/uiSys/vscroll.png";//设置 list 的垂直方向滚动条皮肤。
 			*list.array=arr;//设置 list 的列表数据源。
 			*list.pos(100,100);//设置 list 的位置。
 			*list.selectEnable=true;//设置 list 可选。
@@ -36244,8 +36363,8 @@ var View=(function(_super){
 			*}
 		*}
 	*}
-*import laya.ui.Box;
-*import laya.ui.Label;
+*import laya.uiSys.Box;
+*import laya.uiSys.Label;
 *class Item extends Box
 *{
 	*public function Item()
@@ -36263,28 +36382,28 @@ var View=(function(_super){
 	*function Item(){
 		*Item.__super.call(this);//初始化父类
 		*this.graphics.drawRect(0,0,100,20,"#ff0000");
-		*var label=new laya.ui.Label();//创建一个 Label 类的实例对象 label 。
+		*var label=new laya.uiSys.Label();//创建一个 Label 类的实例对象 label 。
 		*label.text="100000";//设置 label 的文本内容。
 		*label.name="label";//设置 label 的name属性值。
 		*label.size(100,20);//设置 label 的宽度、高度。
 		*this.addChild(label);//将 label 添加到显示列表。
 		*};
 	*Laya.class(Item,"mypackage.listExample.Item",_super);//注册类 Item 。
-	*})(laya.ui.Box);
+	*})(laya.uiSys.Box);
 *Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-*var res=["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png"];
+*var res=["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png"];
 *Laya.loader.load(res,new laya.utils.Handler(this,onLoadComplete));//加载资源。
 *function onLoadComplete(){
 	*var arr=[];//创建一个数组，用于存贮列表的数据信息。
 	*for (var i=0;i &lt;20;i++){
 		*arr.push({label:"item"+i});
 		*}
-	*var list=new laya.ui.List();//创建一个 List 类的实例对象 list 。
+	*var list=new laya.uiSys.List();//创建一个 List 类的实例对象 list 。
 	*list.itemRender=mypackage.listExample.Item;//设置 list 的单元格渲染器。
 	*list.repeatX=1;//设置 list 的水平方向单元格数量。
 	*list.repeatY=10;//设置 list 的垂直方向单元格数量。
-	*list.vScrollBarSkin="resource/ui/vscroll.png";//设置 list 的垂直方向滚动条皮肤。
+	*list.vScrollBarSkin="resource/uiSys/vscroll.png";//设置 list 的垂直方向滚动条皮肤。
 	*list.array=arr;//设置 list 的列表数据源。
 	*list.pos(100,100);//设置 list 的位置。
 	*list.selectEnable=true;//设置 list 可选。
@@ -36297,13 +36416,13 @@ var View=(function(_super){
 	*}
 *
 *@example
-*import List=laya.ui.List;
+*import List=laya.uiSys.List;
 *import Handler=laya.utils.Handler;
 *public class List_Example {
 	*public List_Example(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png"],Handler.create(this,this.onLoadComplete));
+		*Laya.loader.load(["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png"],Handler.create(this,this.onLoadComplete));
 		*}
 	*private onLoadComplete():void {
 		*var arr=[];//创建一个数组，用于存贮列表的数据信息。
@@ -36315,7 +36434,7 @@ var View=(function(_super){
 		*list.itemRender=Item;//设置 list 的单元格渲染器。
 		*list.repeatX=1;//设置 list 的水平方向单元格数量。
 		*list.repeatY=10;//设置 list 的垂直方向单元格数量。
-		*list.vScrollBarSkin="resource/ui/vscroll.png";//设置 list 的垂直方向滚动条皮肤。
+		*list.vScrollBarSkin="resource/uiSys/vscroll.png";//设置 list 的垂直方向滚动条皮肤。
 		*list.array=arr;//设置 list 的列表数据源。
 		*list.pos(100,100);//设置 list 的位置。
 		*list.selectEnable=true;//设置 list 可选。
@@ -36326,8 +36445,8 @@ var View=(function(_super){
 		*console.log("当前选择的项目索引： index= ",index);
 		*}
 	*}
-*import Box=laya.ui.Box;
-*import Label=laya.ui.Label;
+*import Box=laya.uiSys.Box;
+*import Label=laya.uiSys.Label;
 *class Item extends Box {
 	*constructor(){
 		*this.graphics.drawRect(0,0,100,20,null,"#ff0000");
@@ -37140,7 +37259,7 @@ var List=(function(_super){
 *@example
 *package
 *{
-	*import laya.ui.Tree;
+	*import laya.uiSys.Tree;
 	*import laya.utils.Browser;
 	*import laya.utils.Handler;
 	*public class Tree_Example
@@ -37149,7 +37268,7 @@ var List=(function(_super){
 		*{
 			*Laya.init(640,800);
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png","resource/ui/clip_selectBox.png","resource/ui/clip_tree_folder.png","resource/ui/clip_tree_arrow.png"],Handler.create(this,onLoadComplete));
+			*Laya.loader.load(["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png","resource/uiSys/clip_selectBox.png","resource/uiSys/clip_tree_folder.png","resource/uiSys/clip_tree_arrow.png"],Handler.create(this,onLoadComplete));
 			*}
 		*private function onLoadComplete():void
 		*{
@@ -37158,7 +37277,7 @@ var List=(function(_super){
 			*var domParser:*=new Browser.window.DOMParser();//创建一个DOMParser实例domParser。
 			*var xml:*=domParser.parseFromString(xmlString,"text/xml");//解析xml字符。
 			*var tree:Tree=new Tree();//创建一个 Tree 类的实例对象 tree 。
-			*tree.scrollBarSkin="resource/ui/vscroll.png";//设置 tree 的皮肤。
+			*tree.scrollBarSkin="resource/uiSys/vscroll.png";//设置 tree 的皮肤。
 			*tree.itemRender=Item;//设置 tree 的项渲染器。
 			*tree.xml=xml;//设置 tree 的树结构数据。
 			*tree.x=100;//设置 tree 对象的属性 x 的值，用于控制 tree 对象的显示位置。
@@ -37169,9 +37288,9 @@ var List=(function(_super){
 			*}
 		*}
 	*}
-*import laya.ui.Box;
-*import laya.ui.Clip;
-*import laya.ui.Label;
+*import laya.uiSys.Box;
+*import laya.uiSys.Clip;
+*import laya.uiSys.Label;
 *class Item extends Box
 *{
 	*public function Item()
@@ -37179,14 +37298,14 @@ var List=(function(_super){
 		*this.name="render";
 		*this.right=0;
 		*this.left=0;
-		*var selectBox:Clip=new Clip("resource/ui/clip_selectBox.png",1,2);
+		*var selectBox:Clip=new Clip("resource/uiSys/clip_selectBox.png",1,2);
 		*selectBox.name="selectBox";
 		*selectBox.height=24;
 		*selectBox.x=13;
 		*selectBox.y=0;
 		*selectBox.left=12;
 		*addChild(selectBox);
-		*var folder:Clip=new Clip("resource/ui/clip_tree_folder.png",1,3);
+		*var folder:Clip=new Clip("resource/uiSys/clip_tree_folder.png",1,3);
 		*folder.name="folder";
 		*folder.x=14;
 		*folder.y=4;
@@ -37201,7 +37320,7 @@ var List=(function(_super){
 		*label.left=33;
 		*label.right=0;
 		*addChild(label);
-		*var arrow:Clip=new Clip("resource/ui/clip_tree_arrow.png",1,2);
+		*var arrow:Clip=new Clip("resource/uiSys/clip_tree_arrow.png",1,2);
 		*arrow.name="arrow";
 		*arrow.x=0;
 		*arrow.y=5;
@@ -37211,15 +37330,15 @@ var List=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高、渲染模式
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*var res=["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png","resource/ui/clip_selectBox.png","resource/ui/clip_tree_folder.png","resource/ui/clip_tree_arrow.png"];
+*var res=["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png","resource/uiSys/clip_selectBox.png","resource/uiSys/clip_tree_folder.png","resource/uiSys/clip_tree_arrow.png"];
 *Laya.loader.load(res,new laya.utils.Handler(this,onLoadComplete));
 *function onLoadComplete(){
 	*var xmlString;//创建一个xml字符串，用于存储树结构数据。
 	*xmlString="&lt;root&gt;&lt;item label='box1'&gt;&lt;abc label='child1'/&gt;&lt;abc label='child2'/&gt;&lt;abc label='child3'/&gt;&lt;abc label='child4'/&gt;&lt;abc label='child5'/&gt;&lt;/item&gt;&lt;item label='box2'&gt;&lt;abc label='child1'/&gt;&lt;abc label='child2'/&gt;&lt;abc label='child3'/&gt;&lt;abc label='child4'/&gt;&lt;/item&gt;&lt;/root&gt;";
 	*var domParser=new laya.utils.Browser.window.DOMParser();//创建一个DOMParser实例domParser。
 	*var xml=domParser.parseFromString(xmlString,"text/xml");//解析xml字符。
-	*var tree=new laya.ui.Tree();//创建一个 Tree 类的实例对象 tree 。
-	*tree.scrollBarSkin="resource/ui/vscroll.png";//设置 tree 的皮肤。
+	*var tree=new laya.uiSys.Tree();//创建一个 Tree 类的实例对象 tree 。
+	*tree.scrollBarSkin="resource/uiSys/vscroll.png";//设置 tree 的皮肤。
 	*tree.itemRender=mypackage.treeExample.Item;//设置 tree 的项渲染器。
 	*tree.xml=xml;//设置 tree 的树结构数据。
 	*tree.x=100;//设置 tree 对象的属性 x 的值，用于控制 tree 对象的显示位置。
@@ -37233,19 +37352,19 @@ var List=(function(_super){
 		*Item.__super.call(this);//初始化父类。
 		*this.right=0;
 		*this.left=0;
-		*var selectBox=new laya.ui.Clip("resource/ui/clip_selectBox.png",1,2);
+		*var selectBox=new laya.uiSys.Clip("resource/uiSys/clip_selectBox.png",1,2);
 		*selectBox.name="selectBox";//设置 selectBox 的name 为“selectBox”时，将被识别为树结构的项的背景。2帧：悬停时背景、选中时背景。
 		*selectBox.height=24;
 		*selectBox.x=13;
 		*selectBox.y=0;
 		*selectBox.left=12;
 		*this.addChild(selectBox);//需要使用this.访问父类的属性或方法。
-		*var folder=new laya.ui.Clip("resource/ui/clip_tree_folder.png",1,3);
+		*var folder=new laya.uiSys.Clip("resource/uiSys/clip_tree_folder.png",1,3);
 		*folder.name="folder";//设置 folder 的name 为“folder”时，将被识别为树结构的文件夹开启状态图表。2帧：折叠状态、打开状态。
 		*folder.x=14;
 		*folder.y=4;
 		*this.addChild(folder);
-		*var label=new laya.ui.Label("treeItem");
+		*var label=new laya.uiSys.Label("treeItem");
 		*label.name="label";//设置 label 的name 为“label”时，此值将用于树结构数据赋值。
 		*label.color="#ffff00";
 		*label.width=150;
@@ -37255,23 +37374,23 @@ var List=(function(_super){
 		*label.left=33;
 		*label.right=0;
 		*this.addChild(label);
-		*var arrow=new laya.ui.Clip("resource/ui/clip_tree_arrow.png",1,2);
+		*var arrow=new laya.uiSys.Clip("resource/uiSys/clip_tree_arrow.png",1,2);
 		*arrow.name="arrow";//设置 arrow 的name 为“arrow”时，将被识别为树结构的文件夹开启状态图表。2帧：折叠状态、打开状态。
 		*arrow.x=0;
 		*arrow.y=5;
 		*this.addChild(arrow);
 		*};
 	*Laya.class(Item,"mypackage.treeExample.Item",_super);//注册类 Item 。
-	*})(laya.ui.Box);
+	*})(laya.uiSys.Box);
 *@example
-*import Tree=laya.ui.Tree;
+*import Tree=laya.uiSys.Tree;
 *import Browser=laya.utils.Browser;
 *import Handler=laya.utils.Handler;
 *class Tree_Example {
 	*constructor(){
 		*Laya.init(640,800);
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png","resource/ui/vscroll$up.png","resource/ui/clip_selectBox.png","resource/ui/clip_tree_folder * . * png","resource/ui/clip_tree_arrow.png"],Handler.create(this,this.onLoadComplete));
+		*Laya.loader.load(["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png","resource/uiSys/vscroll$up.png","resource/uiSys/clip_selectBox.png","resource/uiSys/clip_tree_folder * . * png","resource/uiSys/clip_tree_arrow.png"],Handler.create(this,this.onLoadComplete));
 		*}
 	*private onLoadComplete():void {
 		*var xmlString:String;//创建一个xml字符串，用于存储树结构数据。
@@ -37279,7 +37398,7 @@ var List=(function(_super){
 		*var domParser:any=new Browser.window.DOMParser();//创建一个DOMParser实例domParser。
 		*var xml:any=domParser.parseFromString(xmlString,"text/xml");//解析xml字符。
 		*var tree:Tree=new Tree();//创建一个 Tree 类的实例对象 tree 。
-		*tree.scrollBarSkin="resource/ui/vscroll.png";//设置 tree 的皮肤。
+		*tree.scrollBarSkin="resource/uiSys/vscroll.png";//设置 tree 的皮肤。
 		*tree.itemRender=Item;//设置 tree 的项渲染器。
 		*tree.xml=xml;//设置 tree 的树结构数据。
 		*tree.x=100;//设置 tree 对象的属性 x 的值，用于控制 tree 对象的显示位置。
@@ -37289,23 +37408,23 @@ var List=(function(_super){
 		*Laya.stage.addChild(tree);//将 tree 添加到显示列表。
 		*}
 	*}
-*import Box=laya.ui.Box;
-*import Clip=laya.ui.Clip;
-*import Label=laya.ui.Label;
+*import Box=laya.uiSys.Box;
+*import Clip=laya.uiSys.Clip;
+*import Label=laya.uiSys.Label;
 *class Item extends Box {
 	*constructor(){
 		*super();
 		*this.name="render";
 		*this.right=0;
 		*this.left=0;
-		*var selectBox:Clip=new Clip("resource/ui/clip_selectBox.png",1,2);
+		*var selectBox:Clip=new Clip("resource/uiSys/clip_selectBox.png",1,2);
 		*selectBox.name="selectBox";
 		*selectBox.height=24;
 		*selectBox.x=13;
 		*selectBox.y=0;
 		*selectBox.left=12;
 		*this.addChild(selectBox);
-		*var folder:Clip=new Clip("resource/ui/clip_tree_folder.png",1,3);
+		*var folder:Clip=new Clip("resource/uiSys/clip_tree_folder.png",1,3);
 		*folder.name="folder";
 		*folder.x=14;
 		*folder.y=4;
@@ -37320,7 +37439,7 @@ var List=(function(_super){
 		*label.left=33;
 		*label.right=0;
 		*this.addChild(label);
-		*var arrow:Clip=new Clip("resource/ui/clip_tree_arrow.png",1,2);
+		*var arrow:Clip=new Clip("resource/uiSys/clip_tree_arrow.png",1,2);
 		*arrow.name="arrow";
 		*arrow.x=0;
 		*arrow.y=5;
@@ -38751,7 +38870,7 @@ var ViewStack=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>CheckBox</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.CheckBox;
+	*import laya.uiSys.CheckBox;
 	*import laya.utils.Handler;
 	*public class CheckBox_Example
 	*{
@@ -38759,12 +38878,12 @@ var ViewStack=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load("resource/ui/check.png",Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load("resource/uiSys/check.png",Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*trace("资源加载完成！");
-			*var checkBox:CheckBox=new CheckBox("resource/ui/check.png","这个是一个CheckBox组件。");//创建一个 CheckBox 类的实例对象 checkBox ,传入它的皮肤skin和标签label。
+			*var checkBox:CheckBox=new CheckBox("resource/uiSys/check.png","这个是一个CheckBox组件。");//创建一个 CheckBox 类的实例对象 checkBox ,传入它的皮肤skin和标签label。
 			*checkBox.x=100;//设置 checkBox 对象的属性 x 的值，用于控制 checkBox 对象的显示位置。
 			*checkBox.y=100;//设置 checkBox 对象的属性 y 的值，用于控制 checkBox 对象的显示位置。
 			*checkBox.clickHandler=new Handler(this,onClick,[checkBox]);//设置 checkBox 的点击事件处理器。
@@ -38779,11 +38898,11 @@ var ViewStack=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*Laya.loader.load("resource/ui/check.png",laya.utils.Handler.create(this,loadComplete));//加载资源
+*Laya.loader.load("resource/uiSys/check.png",laya.utils.Handler.create(this,loadComplete));//加载资源
 *function loadComplete()
 *{
 	*console.log("资源加载完成！");
-	*var checkBox:laya.ui.CheckBox=new laya.ui.CheckBox("resource/ui/check.png","这个是一个CheckBox组件。");//创建一个 CheckBox 类的类的实例对象 checkBox ,传入它的皮肤skin和标签label。
+	*var checkBox:laya.uiSys.CheckBox=new laya.uiSys.CheckBox("resource/uiSys/check.png","这个是一个CheckBox组件。");//创建一个 CheckBox 类的类的实例对象 checkBox ,传入它的皮肤skin和标签label。
 	*checkBox.x=100;//设置 checkBox 对象的属性 x 的值，用于控制 checkBox 对象的显示位置。
 	*checkBox.y=100;//设置 checkBox 对象的属性 y 的值，用于控制 checkBox 对象的显示位置。
 	*checkBox.clickHandler=new laya.utils.Handler(this,this.onClick,[checkBox],false);//设置 checkBox 的点击事件处理器。
@@ -38794,18 +38913,18 @@ var ViewStack=(function(_super){
 	*console.log("checkBox.selected = ",checkBox.selected);
 	*}
 *@example
-*import CheckBox=laya.ui.CheckBox;
+*import CheckBox=laya.uiSys.CheckBox;
 *import Handler=laya.utils.Handler;
 *class CheckBox_Example{
 	*constructor()
 	*{
 		*Laya.init(640,800);
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load("resource/ui/check.png",Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load("resource/uiSys/check.png",Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete()
 	*{
-		*var checkBox:CheckBox=new CheckBox("resource/ui/check.png","这个是一个CheckBox组件。");//创建一个 CheckBox 类的实例对象 checkBox ,传入它的皮肤skin和标签label。
+		*var checkBox:CheckBox=new CheckBox("resource/uiSys/check.png","这个是一个CheckBox组件。");//创建一个 CheckBox 类的实例对象 checkBox ,传入它的皮肤skin和标签label。
 		*checkBox.x=100;//设置 checkBox 对象的属性 x 的值，用于控制 checkBox 对象的显示位置。
 		*checkBox.y=100;//设置 checkBox 对象的属性 y 的值，用于控制 checkBox 对象的显示位置。
 		*checkBox.clickHandler=new Handler(this,this.onClick,[checkBox]);//设置 checkBox 的点击事件处理器。
@@ -39121,7 +39240,7 @@ var FontClip=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>HScrollBar</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.HScrollBar;
+	*import laya.uiSys.HScrollBar;
 	*import laya.utils.Handler;
 	*public class HScrollBar_Example
 	*{
@@ -39130,12 +39249,12 @@ var FontClip=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/hscroll.png","resource/ui/hscroll$bar.png","resource/ui/hscroll$down.png","resource/ui/hscroll$up.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load(["resource/uiSys/hscroll.png","resource/uiSys/hscroll$bar.png","resource/uiSys/hscroll$down.png","resource/uiSys/hscroll$up.png"],Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*hScrollBar=new HScrollBar();//创建一个 HScrollBar 类的实例对象 hScrollBar 。
-			*hScrollBar.skin="resource/ui/hscroll.png";//设置 hScrollBar 的皮肤。
+			*hScrollBar.skin="resource/uiSys/hscroll.png";//设置 hScrollBar 的皮肤。
 			*hScrollBar.x=100;//设置 hScrollBar 对象的属性 x 的值，用于控制 hScrollBar 对象的显示位置。
 			*hScrollBar.y=100;//设置 hScrollBar 对象的属性 y 的值，用于控制 hScrollBar 对象的显示位置。
 			*hScrollBar.changeHandler=new Handler(this,onChange);//设置 hScrollBar 的滚动变化处理器。
@@ -39151,12 +39270,12 @@ var FontClip=(function(_super){
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
 *var hScrollBar;
-*var res=["resource/ui/hscroll.png","resource/ui/hscroll$bar.png","resource/ui/hscroll$down.png","resource/ui/hscroll$up.png"];
+*var res=["resource/uiSys/hscroll.png","resource/uiSys/hscroll$bar.png","resource/uiSys/hscroll$down.png","resource/uiSys/hscroll$up.png"];
 *Laya.loader.load(res,laya.utils.Handler.create(this,onLoadComplete));//加载资源。
 *function onLoadComplete(){
 	*console.log("资源加载完成！");
-	*hScrollBar=new laya.ui.HScrollBar();//创建一个 HScrollBar 类的实例对象 hScrollBar 。
-	*hScrollBar.skin="resource/ui/hscroll.png";//设置 hScrollBar 的皮肤。
+	*hScrollBar=new laya.uiSys.HScrollBar();//创建一个 HScrollBar 类的实例对象 hScrollBar 。
+	*hScrollBar.skin="resource/uiSys/hscroll.png";//设置 hScrollBar 的皮肤。
 	*hScrollBar.x=100;//设置 hScrollBar 对象的属性 x 的值，用于控制 hScrollBar 对象的显示位置。
 	*hScrollBar.y=100;//设置 hScrollBar 对象的属性 y 的值，用于控制 hScrollBar 对象的显示位置。
 	*hScrollBar.changeHandler=new laya.utils.Handler(this,onChange);//设置 hScrollBar 的滚动变化处理器。
@@ -39167,18 +39286,18 @@ var FontClip=(function(_super){
 	*console.log("滚动条的位置： value="+value);
 	*}
 *@example
-*import HScrollBar=laya.ui.HScrollBar;
+*import HScrollBar=laya.uiSys.HScrollBar;
 *import Handler=laya.utils.Handler;
 *class HScrollBar_Example {
 	*private hScrollBar:HScrollBar;
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/hscroll.png","resource/ui/hscroll$bar.png","resource/ui/hscroll$down.png","resource/ui/hscroll$up.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load(["resource/uiSys/hscroll.png","resource/uiSys/hscroll$bar.png","resource/uiSys/hscroll$down.png","resource/uiSys/hscroll$up.png"],Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*this.hScrollBar=new HScrollBar();//创建一个 HScrollBar 类的实例对象 hScrollBar 。
-		*this.hScrollBar.skin="resource/ui/hscroll.png";//设置 hScrollBar 的皮肤。
+		*this.hScrollBar.skin="resource/uiSys/hscroll.png";//设置 hScrollBar 的皮肤。
 		*this.hScrollBar.x=100;//设置 hScrollBar 对象的属性 x 的值，用于控制 hScrollBar 对象的显示位置。
 		*this.hScrollBar.y=100;//设置 hScrollBar 对象的属性 y 的值，用于控制 hScrollBar 对象的显示位置。
 		*this.hScrollBar.changeHandler=new Handler(this,this.onChange);//设置 hScrollBar 的滚动变化处理器。
@@ -39214,7 +39333,7 @@ var HScrollBar=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>HSlider</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.HSlider;
+	*import laya.uiSys.HSlider;
 	*import laya.utils.Handler;
 	*public class HSlider_Example
 	*{
@@ -39223,12 +39342,12 @@ var HScrollBar=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/hslider.png","resource/ui/hslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load(["resource/uiSys/hslider.png","resource/uiSys/hslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*hSlider=new HSlider();//创建一个 HSlider 类的实例对象 hSlider 。
-			*hSlider.skin="resource/ui/hslider.png";//设置 hSlider 的皮肤。
+			*hSlider.skin="resource/uiSys/hslider.png";//设置 hSlider 的皮肤。
 			*hSlider.min=0;//设置 hSlider 最低位置值。
 			*hSlider.max=10;//设置 hSlider 最高位置值。
 			*hSlider.value=2;//设置 hSlider 当前位置值。
@@ -39248,12 +39367,12 @@ var HScrollBar=(function(_super){
 *Laya.init(640,800,"canvas");//设置游戏画布宽高、渲染模式
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
 *var hSlider;
-*var res=["resource/ui/hslider.png","resource/ui/hslider$bar.png"];
+*var res=["resource/uiSys/hslider.png","resource/uiSys/hslider$bar.png"];
 *Laya.loader.load(res,laya.utils.Handler.create(this,onLoadComplete));
 *function onLoadComplete(){
 	*console.log("资源加载完成！");
-	*hSlider=new laya.ui.HSlider();//创建一个 HSlider 类的实例对象 hSlider 。
-	*hSlider.skin="resource/ui/hslider.png";//设置 hSlider 的皮肤。
+	*hSlider=new laya.uiSys.HSlider();//创建一个 HSlider 类的实例对象 hSlider 。
+	*hSlider.skin="resource/uiSys/hslider.png";//设置 hSlider 的皮肤。
 	*hSlider.min=0;//设置 hSlider 最低位置值。
 	*hSlider.max=10;//设置 hSlider 最高位置值。
 	*hSlider.value=2;//设置 hSlider 当前位置值。
@@ -39269,17 +39388,17 @@ var HScrollBar=(function(_super){
 	*}
 *@example
 *import Handler=laya.utils.Handler;
-*import HSlider=laya.ui.HSlider;
+*import HSlider=laya.uiSys.HSlider;
 *class HSlider_Example {
 	*private hSlider:HSlider;
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/hslider.png","resource/ui/hslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load(["resource/uiSys/hslider.png","resource/uiSys/hslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*this.hSlider=new HSlider();//创建一个 HSlider 类的实例对象 hSlider 。
-		*this.hSlider.skin="resource/ui/hslider.png";//设置 hSlider 的皮肤。
+		*this.hSlider.skin="resource/uiSys/hslider.png";//设置 hSlider 的皮肤。
 		*this.hSlider.min=0;//设置 hSlider 最低位置值。
 		*this.hSlider.max=10;//设置 hSlider 最高位置值。
 		*this.hSlider.value=2;//设置 hSlider 当前位置值。
@@ -39319,8 +39438,8 @@ var HSlider=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>VScrollBar</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.vScrollBar;
-	*import laya.ui.VScrollBar;
+	*import laya.uiSys.vScrollBar;
+	*import laya.uiSys.VScrollBar;
 	*import laya.utils.Handler;
 	*public class VScrollBar_Example
 	*{
@@ -39329,12 +39448,12 @@ var HSlider=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png"],Handler.create(this,onLoadComplete));
+			*Laya.loader.load(["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png"],Handler.create(this,onLoadComplete));
 			*}
 		*private function onLoadComplete():void
 		*{
 			*vScrollBar=new VScrollBar();//创建一个 vScrollBar 类的实例对象 hScrollBar 。
-			*vScrollBar.skin="resource/ui/vscroll.png";//设置 vScrollBar 的皮肤。
+			*vScrollBar.skin="resource/uiSys/vscroll.png";//设置 vScrollBar 的皮肤。
 			*vScrollBar.x=100;//设置 vScrollBar 对象的属性 x 的值，用于控制 vScrollBar 对象的显示位置。
 			*vScrollBar.y=100;//设置 vScrollBar 对象的属性 y 的值，用于控制 vScrollBar 对象的显示位置。
 			*vScrollBar.changeHandler=new Handler(this,onChange);//设置 vScrollBar 的滚动变化处理器。
@@ -39350,11 +39469,11 @@ var HSlider=(function(_super){
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
 *var vScrollBar;
-*var res=["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png"];
+*var res=["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png"];
 *Laya.loader.load(res,laya.utils.Handler.create(this,onLoadComplete));//加载资源。
 *function onLoadComplete(){
-	*vScrollBar=new laya.ui.VScrollBar();//创建一个 vScrollBar 类的实例对象 hScrollBar 。
-	*vScrollBar.skin="resource/ui/vscroll.png";//设置 vScrollBar 的皮肤。
+	*vScrollBar=new laya.uiSys.VScrollBar();//创建一个 vScrollBar 类的实例对象 hScrollBar 。
+	*vScrollBar.skin="resource/uiSys/vscroll.png";//设置 vScrollBar 的皮肤。
 	*vScrollBar.x=100;//设置 vScrollBar 对象的属性 x 的值，用于控制 vScrollBar 对象的显示位置。
 	*vScrollBar.y=100;//设置 vScrollBar 对象的属性 y 的值，用于控制 vScrollBar 对象的显示位置。
 	*vScrollBar.changeHandler=new laya.utils.Handler(this,onChange);//设置 vScrollBar 的滚动变化处理器。
@@ -39364,18 +39483,18 @@ var HSlider=(function(_super){
 	*console.log("滚动条的位置： value="+value);
 	*}
 *@example
-*import VScrollBar=laya.ui.VScrollBar;
+*import VScrollBar=laya.uiSys.VScrollBar;
 *import Handler=laya.utils.Handler;
 *class VScrollBar_Example {
 	*private vScrollBar:VScrollBar;
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/vscroll.png","resource/ui/vscroll$bar.png","resource/ui/vscroll$down.png","resource/ui/vscroll$up.png"],Handler.create(this,this.onLoadComplete));
+		*Laya.loader.load(["resource/uiSys/vscroll.png","resource/uiSys/vscroll$bar.png","resource/uiSys/vscroll$down.png","resource/uiSys/vscroll$up.png"],Handler.create(this,this.onLoadComplete));
 		*}
 	*private onLoadComplete():void {
 		*this.vScrollBar=new VScrollBar();//创建一个 vScrollBar 类的实例对象 hScrollBar 。
-		*this.vScrollBar.skin="resource/ui/vscroll.png";//设置 vScrollBar 的皮肤。
+		*this.vScrollBar.skin="resource/uiSys/vscroll.png";//设置 vScrollBar 的皮肤。
 		*this.vScrollBar.x=100;//设置 vScrollBar 对象的属性 x 的值，用于控制 vScrollBar 对象的显示位置。
 		*this.vScrollBar.y=100;//设置 vScrollBar 对象的属性 y 的值，用于控制 vScrollBar 对象的显示位置。
 		*this.vScrollBar.changeHandler=new Handler(this,this.onChange);//设置 vScrollBar 的滚动变化处理器。
@@ -39404,7 +39523,7 @@ var VScrollBar=(function(_super){
 *package
 *{
 	*import laya.display.Stage;
-	*import laya.ui.TextInput;
+	*import laya.uiSys.TextInput;
 	*import laya.utils.Handler;
 	*public class TextInput_Example
 	*{
@@ -39412,12 +39531,12 @@ var VScrollBar=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/input.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load(["resource/uiSys/input.png"],Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*var textInput:TextInput=new TextInput("这是一个TextInput实例。");//创建一个 TextInput 类的实例对象 textInput 。
-			*textInput.skin="resource/ui/input.png";//设置 textInput 的皮肤。
+			*textInput.skin="resource/uiSys/input.png";//设置 textInput 的皮肤。
 			*textInput.sizeGrid="4,4,4,4";//设置 textInput 的网格信息。
 			*textInput.color="#008fff";//设置 textInput 的文本颜色。
 			*textInput.font="Arial";//设置 textInput 的文本字体。
@@ -39435,10 +39554,10 @@ var VScrollBar=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*Laya.loader.load(["resource/ui/input.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
+*Laya.loader.load(["resource/uiSys/input.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
 *function onLoadComplete(){
-	*var textInput=new laya.ui.TextInput("这是一个TextInput实例。");//创建一个 TextInput 类的实例对象 textInput 。
-	*textInput.skin="resource/ui/input.png";//设置 textInput 的皮肤。
+	*var textInput=new laya.uiSys.TextInput("这是一个TextInput实例。");//创建一个 TextInput 类的实例对象 textInput 。
+	*textInput.skin="resource/uiSys/input.png";//设置 textInput 的皮肤。
 	*textInput.sizeGrid="4,4,4,4";//设置 textInput 的网格信息。
 	*textInput.color="#008fff";//设置 textInput 的文本颜色。
 	*textInput.font="Arial";//设置 textInput 的文本字体。
@@ -39453,17 +39572,17 @@ var VScrollBar=(function(_super){
 	*}
 *@example
 *import Stage=laya.display.Stage;
-*import TextInput=laya.ui.TextInput;
+*import TextInput=laya.uiSys.TextInput;
 *import Handler=laya.utils.Handler;
 *class TextInput_Example {
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/input.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load(["resource/uiSys/input.png"],Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*var textInput:TextInput=new TextInput("这是一个TextInput实例。");//创建一个 TextInput 类的实例对象 textInput 。
-		*textInput.skin="resource/ui/input.png";//设置 textInput 的皮肤。
+		*textInput.skin="resource/uiSys/input.png";//设置 textInput 的皮肤。
 		*textInput.sizeGrid="4,4,4,4";//设置 textInput 的网格信息。
 		*textInput.color="#008fff";//设置 textInput 的文本颜色。
 		*textInput.font="Arial";//设置 textInput 的文本字体。
@@ -39729,8 +39848,8 @@ var TextInput=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>VSlider</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.HSlider;
-	*import laya.ui.VSlider;
+	*import laya.uiSys.HSlider;
+	*import laya.uiSys.VSlider;
 	*import laya.utils.Handler;
 	*public class VSlider_Example
 	*{
@@ -39739,12 +39858,12 @@ var TextInput=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load(["resource/uiSys/vslider.png","resource/uiSys/vslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-			*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+			*vSlider.skin="resource/uiSys/vslider.png";//设置 vSlider 的皮肤。
 			*vSlider.min=0;//设置 vSlider 最低位置值。
 			*vSlider.max=10;//设置 vSlider 最高位置值。
 			*vSlider.value=2;//设置 vSlider 当前位置值。
@@ -39764,10 +39883,10 @@ var TextInput=(function(_super){
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
 *var vSlider;
-*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
+*Laya.loader.load(["resource/uiSys/vslider.png","resource/uiSys/vslider$bar.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
 *function onLoadComplete(){
-	*vSlider=new laya.ui.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-	*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+	*vSlider=new laya.uiSys.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+	*vSlider.skin="resource/uiSys/vslider.png";//设置 vSlider 的皮肤。
 	*vSlider.min=0;//设置 vSlider 最低位置值。
 	*vSlider.max=10;//设置 vSlider 最高位置值。
 	*vSlider.value=2;//设置 vSlider 当前位置值。
@@ -39781,19 +39900,19 @@ var TextInput=(function(_super){
 	*console.log("滑块的位置： value="+value);
 	*}
 *@example
-*import HSlider=laya.ui.HSlider;
-*import VSlider=laya.ui.VSlider;
+*import HSlider=laya.uiSys.HSlider;
+*import VSlider=laya.uiSys.VSlider;
 *import Handler=laya.utils.Handler;
 *class VSlider_Example {
 	*private vSlider:VSlider;
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load(["resource/uiSys/vslider.png","resource/uiSys/vslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*this.vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-		*this.vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+		*this.vSlider.skin="resource/uiSys/vslider.png";//设置 vSlider 的皮肤。
 		*this.vSlider.min=0;//设置 vSlider 最低位置值。
 		*this.vSlider.max=10;//设置 vSlider 最高位置值。
 		*this.vSlider.value=2;//设置 vSlider 当前位置值。
@@ -40756,8 +40875,8 @@ var VBox=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>RadioGroup</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.Radio;
-	*import laya.ui.RadioGroup;
+	*import laya.uiSys.Radio;
+	*import laya.uiSys.RadioGroup;
 	*import laya.utils.Handler;
 	*public class RadioGroup_Example
 	*{
@@ -40765,14 +40884,14 @@ var VBox=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/radio.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load(["resource/uiSys/radio.png"],Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*var radioGroup:RadioGroup=new RadioGroup();//创建一个 RadioGroup 类的实例对象 radioGroup 。
 			*radioGroup.pos(100,100);//设置 radioGroup 的位置信息。
 			*radioGroup.labels="item0,item1,item2";//设置 radioGroup 的标签集。
-			*radioGroup.skin="resource/ui/radio.png";//设置 radioGroup 的皮肤。
+			*radioGroup.skin="resource/uiSys/radio.png";//设置 radioGroup 的皮肤。
 			*radioGroup.space=10;//设置 radioGroup 的项间隔距离。
 			*radioGroup.selectHandler=new Handler(this,onSelect);//设置 radioGroup 的选择项发生改变时执行的处理器。
 			*Laya.stage.addChild(radioGroup);//将 radioGroup 添加到显示列表。
@@ -40786,12 +40905,12 @@ var VBox=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高、渲染模式
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*Laya.loader.load(["resource/ui/radio.png"],laya.utils.Handler.create(this,onLoadComplete));
+*Laya.loader.load(["resource/uiSys/radio.png"],laya.utils.Handler.create(this,onLoadComplete));
 *function onLoadComplete(){
-	*var radioGroup=new laya.ui.RadioGroup();//创建一个 RadioGroup 类的实例对象 radioGroup 。
+	*var radioGroup=new laya.uiSys.RadioGroup();//创建一个 RadioGroup 类的实例对象 radioGroup 。
 	*radioGroup.pos(100,100);//设置 radioGroup 的位置信息。
 	*radioGroup.labels="item0,item1,item2";//设置 radioGroup 的标签集。
-	*radioGroup.skin="resource/ui/radio.png";//设置 radioGroup 的皮肤。
+	*radioGroup.skin="resource/uiSys/radio.png";//设置 radioGroup 的皮肤。
 	*radioGroup.space=10;//设置 radioGroup 的项间隔距离。
 	*radioGroup.selectHandler=new laya.utils.Handler(this,onSelect);//设置 radioGroup 的选择项发生改变时执行的处理器。
 	*Laya.stage.addChild(radioGroup);//将 radioGroup 添加到显示列表。
@@ -40800,20 +40919,20 @@ var VBox=(function(_super){
 	*console.log("当前选择的单选按钮索引: index= ",index);
 	*}
 *@example
-*import Radio=laya.ui.Radio;
-*import RadioGroup=laya.ui.RadioGroup;
+*import Radio=laya.uiSys.Radio;
+*import RadioGroup=laya.uiSys.RadioGroup;
 *import Handler=laya.utils.Handler;
 *class RadioGroup_Example {
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/radio.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load(["resource/uiSys/radio.png"],Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*var radioGroup:RadioGroup=new RadioGroup();//创建一个 RadioGroup 类的实例对象 radioGroup 。
 		*radioGroup.pos(100,100);//设置 radioGroup 的位置信息。
 		*radioGroup.labels="item0,item1,item2";//设置 radioGroup 的标签集。
-		*radioGroup.skin="resource/ui/radio.png";//设置 radioGroup 的皮肤。
+		*radioGroup.skin="resource/uiSys/radio.png";//设置 radioGroup 的皮肤。
 		*radioGroup.space=10;//设置 radioGroup 的项间隔距离。
 		*radioGroup.selectHandler=new Handler(this,this.onSelect);//设置 radioGroup 的选择项发生改变时执行的处理器。
 		*Laya.stage.addChild(radioGroup);//将 radioGroup 添加到显示列表。
@@ -40847,7 +40966,7 @@ var RadioGroup=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>Tab</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.Tab;
+	*import laya.uiSys.Tab;
 	*import laya.utils.Handler;
 	*public class Tab_Example
 	*{
@@ -40855,12 +40974,12 @@ var RadioGroup=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/tab.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load(["resource/uiSys/tab.png"],Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*var tab:Tab=new Tab();//创建一个 Tab 类的实例对象 tab 。
-			*tab.skin="resource/ui/tab.png";//设置 tab 的皮肤。
+			*tab.skin="resource/uiSys/tab.png";//设置 tab 的皮肤。
 			*tab.labels="item0,item1,item2";//设置 tab 的标签集。
 			*tab.x=100;//设置 tab 对象的属性 x 的值，用于控制 tab 对象的显示位置。
 			*tab.y=100;//设置 tab 对象的属性 y 的值，用于控制 tab 对象的显示位置。
@@ -40876,10 +40995,10 @@ var RadioGroup=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*Laya.loader.load(["resource/ui/tab.png"],laya.utils.Handler.create(this,onLoadComplete));
+*Laya.loader.load(["resource/uiSys/tab.png"],laya.utils.Handler.create(this,onLoadComplete));
 *function onLoadComplete(){
-	*var tab=new laya.ui.Tab();//创建一个 Tab 类的实例对象 tab 。
-	*tab.skin="resource/ui/tab.png";//设置 tab 的皮肤。
+	*var tab=new laya.uiSys.Tab();//创建一个 Tab 类的实例对象 tab 。
+	*tab.skin="resource/uiSys/tab.png";//设置 tab 的皮肤。
 	*tab.labels="item0,item1,item2";//设置 tab 的标签集。
 	*tab.x=100;//设置 tab 对象的属性 x 的值，用于控制 tab 对象的显示位置。
 	*tab.y=100;//设置 tab 对象的属性 y 的值，用于控制 tab 对象的显示位置。
@@ -40890,17 +41009,17 @@ var RadioGroup=(function(_super){
 	*console.log("当前选择的标签页索引: index= ",index);
 	*}
 *@example
-*import Tab=laya.ui.Tab;
+*import Tab=laya.uiSys.Tab;
 *import Handler=laya.utils.Handler;
 *class Tab_Example {
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/tab.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load(["resource/uiSys/tab.png"],Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*var tab:Tab=new Tab();//创建一个 Tab 类的实例对象 tab 。
-		*tab.skin="resource/ui/tab.png";//设置 tab 的皮肤。
+		*tab.skin="resource/uiSys/tab.png";//设置 tab 的皮肤。
 		*tab.labels="item0,item1,item2";//设置 tab 的标签集。
 		*tab.x=100;//设置 tab 对象的属性 x 的值，用于控制 tab 对象的显示位置。
 		*tab.y=100;//设置 tab 对象的属性 y 的值，用于控制 tab 对象的显示位置。
@@ -40937,7 +41056,7 @@ var Tab=(function(_super){
 *@example <caption>以下示例代码，创建了一个 <code>TextArea</code> 实例。</caption>
 *package
 *{
-	*import laya.ui.TextArea;
+	*import laya.uiSys.TextArea;
 	*import laya.utils.Handler;
 	*public class TextArea_Example
 	*{
@@ -40945,12 +41064,12 @@ var Tab=(function(_super){
 		*{
 			*Laya.init(640,800);//设置游戏画布宽高。
 			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/input.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*Laya.loader.load(["resource/uiSys/input.png"],Handler.create(this,onLoadComplete));//加载资源。
 			*}
 		*private function onLoadComplete():void
 		*{
 			*var textArea:TextArea=new TextArea("这个一个TextArea实例。");//创建一个 TextArea 类的实例对象 textArea 。
-			*textArea.skin="resource/ui/input.png";//设置 textArea 的皮肤。
+			*textArea.skin="resource/uiSys/input.png";//设置 textArea 的皮肤。
 			*textArea.sizeGrid="4,4,4,4";//设置 textArea 的网格信息。
 			*textArea.color="#008fff";//设置 textArea 的文本颜色。
 			*textArea.font="Arial";//设置 textArea 的字体。
@@ -40968,10 +41087,10 @@ var Tab=(function(_super){
 *@example
 *Laya.init(640,800);//设置游戏画布宽高、渲染模式
 *Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*Laya.loader.load(["resource/ui/input.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
+*Laya.loader.load(["resource/uiSys/input.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
 *function onLoadComplete(){
-	*var textArea=new laya.ui.TextArea("这个一个TextArea实例。");//创建一个 TextArea 类的实例对象 textArea 。
-	*textArea.skin="resource/ui/input.png";//设置 textArea 的皮肤。
+	*var textArea=new laya.uiSys.TextArea("这个一个TextArea实例。");//创建一个 TextArea 类的实例对象 textArea 。
+	*textArea.skin="resource/uiSys/input.png";//设置 textArea 的皮肤。
 	*textArea.sizeGrid="4,4,4,4";//设置 textArea 的网格信息。
 	*textArea.color="#008fff";//设置 textArea 的文本颜色。
 	*textArea.font="Arial";//设置 textArea 的字体。
@@ -40985,17 +41104,17 @@ var Tab=(function(_super){
 	*Laya.stage.addChild(textArea);//将 textArea 添加到显示列表。
 	*}
 *@example
-*import TextArea=laya.ui.TextArea;
+*import TextArea=laya.uiSys.TextArea;
 *import Handler=laya.utils.Handler;
 *class TextArea_Example {
 	*constructor(){
 		*Laya.init(640,800);//设置游戏画布宽高、渲染模式。
 		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/input.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*Laya.loader.load(["resource/uiSys/input.png"],Handler.create(this,this.onLoadComplete));//加载资源。
 		*}
 	*private onLoadComplete():void {
 		*var textArea:TextArea=new TextArea("这个一个TextArea实例。");//创建一个 TextArea 类的实例对象 textArea 。
-		*textArea.skin="resource/ui/input.png";//设置 textArea 的皮肤。
+		*textArea.skin="resource/uiSys/input.png";//设置 textArea 的皮肤。
 		*textArea.sizeGrid="4,4,4,4";//设置 textArea 的网格信息。
 		*textArea.color="#008fff";//设置 textArea 的文本颜色。
 		*textArea.font="Arial";//设置 textArea 的字体。
@@ -41219,7 +41338,7 @@ var MinBtnComp=(function(_super){
 })(MinBtnCompUI)
 
 
-	Laya.__init([LoaderManager,EventDispatcher,CSystem,WebGLContext2D,DrawText,Render,Browser,View,LocalStorage,ShaderCompile,Timer,GraphicAnimation,AtlasGrid]);
+	Laya.__init([LoaderManager,EventDispatcher,CSystem,Render,DrawText,Browser,View,WebGLContext2D,ShaderCompile,Timer,GraphicAnimation,LocalStorage,AtlasGrid]);
 	/**LayaGameStart**/
 	new LayaSample();
 

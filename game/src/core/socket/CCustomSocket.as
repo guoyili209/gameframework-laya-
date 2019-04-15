@@ -120,9 +120,13 @@ package core.socket {
             byte.bytesAvailable;
         }
     
-        public function sendData(cmd:uint, data:* = null) : void
+        public function sendCMDData(cmd:uint, data:* = null) : void
         {
 
+        }
+        
+        public function registerSocketMsg(cmd:int,callBackFunc:Function):void{
+        
         }
         
         private var _pCashDataArray:Vector.<Byte> = new Vector.<Byte>();

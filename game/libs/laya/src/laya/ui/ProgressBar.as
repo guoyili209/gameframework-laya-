@@ -15,7 +15,7 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个新的 <code>ProgressBar</code> 实例，设置了它的皮肤、位置、宽高、网格等信息，并添加到舞台上。</caption>
 	 * package
 	 *	{
-	 *		import laya.ui.ProgressBar;
+	 *		import laya.uiSys.ProgressBar;
 	 *		import laya.utils.Handler;
 	 *		public class ProgressBar_Example
 	 *		{
@@ -24,11 +24,11 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);//设置游戏画布宽高。
 	 *				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load(["resource/ui/progress.png", "resource/ui/progress$bar.png"], Handler.create(this, onLoadComplete));//加载资源。
+	 *				Laya.loader.load(["resource/uiSys/progress.png", "resource/uiSys/progress$bar.png"], Handler.create(this, onLoadComplete));//加载资源。
 	 *			}
 	 *			private function onLoadComplete():void
 	 *			{
-	 *				progressBar = new ProgressBar("resource/ui/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
+	 *				progressBar = new ProgressBar("resource/uiSys/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
 	 *				progressBar.x = 100;//设置 progressBar 对象的属性 x 的值，用于控制 progressBar 对象的显示位置。
 	 *				progressBar.y = 100;//设置 progressBar 对象的属性 y 的值，用于控制 progressBar 对象的显示位置。
 	 *				progressBar.value = 0.3;//设置 progressBar 的进度值。
@@ -53,11 +53,11 @@ package laya.ui {
 	 * @example
 	 * Laya.init(640, 800);//设置游戏画布宽高
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
-	 * var res = ["resource/ui/progress.png", "resource/ui/progress$bar.png"];
+	 * var res = ["resource/uiSys/progress.png", "resource/uiSys/progress$bar.png"];
 	 * Laya.loader.load(res, laya.utils.Handler.create(this, onLoadComplete));//加载资源。
 	 * function onLoadComplete()
 	 * {
-	 *     progressBar = new laya.ui.ProgressBar("resource/ui/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
+	 *     progressBar = new laya.uiSys.ProgressBar("resource/uiSys/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
 	 *     progressBar.x = 100;//设置 progressBar 对象的属性 x 的值，用于控制 progressBar 对象的显示位置。
 	 *     progressBar.y = 100;//设置 progressBar 对象的属性 y 的值，用于控制 progressBar 对象的显示位置。
 	 *     progressBar.value = 0.3;//设置 progressBar 的进度值。
@@ -78,17 +78,17 @@ package laya.ui {
 	 *     console.log("进度发生改变： value=" ,value);
 	 * }
 	 * @example
-	 * import ProgressBar = laya.ui.ProgressBar;
+	 * import ProgressBar = laya.uiSys.ProgressBar;
 	 * import Handler = laya.utils.Handler;
 	 * class ProgressBar_Example {
 	 *     private progressBar: ProgressBar;
 	 *     public ProgressBar_Example() {
 	 *         Laya.init(640, 800);//设置游戏画布宽高。
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load(["resource/ui/progress.png", "resource/ui/progress$bar.png"], Handler.create(this, this.onLoadComplete));//加载资源。
+	 *         Laya.loader.load(["resource/uiSys/progress.png", "resource/uiSys/progress$bar.png"], Handler.create(this, this.onLoadComplete));//加载资源。
 	 *     }
 	 *     private onLoadComplete(): void {
-	 *         this.progressBar = new ProgressBar("resource/ui/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
+	 *         this.progressBar = new ProgressBar("resource/uiSys/progress.png");//创建一个 ProgressBar 类的实例对象 progressBar 。
 	 *         this.progressBar.x = 100;//设置 progressBar 对象的属性 x 的值，用于控制 progressBar 对象的显示位置。
 	 *         this.progressBar.y = 100;//设置 progressBar 对象的属性 y 的值，用于控制 progressBar 对象的显示位置。
 	 *         this.progressBar.value = 0.3;//设置 progressBar 的进度值。

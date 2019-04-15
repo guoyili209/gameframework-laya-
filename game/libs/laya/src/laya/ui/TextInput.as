@@ -34,7 +34,7 @@ package laya.ui {
 	 * package
 	 *	{
 	 *		import laya.display.Stage;
-	 *		import laya.ui.TextInput;
+	 *		import laya.uiSys.TextInput;
 	 *		import laya.utils.Handler;
 	 *		public class TextInput_Example
 	 *		{
@@ -42,12 +42,12 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);//设置游戏画布宽高、渲染模式。
 	 *				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load(["resource/ui/input.png"], Handler.create(this, onLoadComplete));//加载资源。
+	 *				Laya.loader.load(["resource/uiSys/input.png"], Handler.create(this, onLoadComplete));//加载资源。
 	 *			}
 	 *			private function onLoadComplete():void
 	 *			{
 	 *				var textInput:TextInput = new TextInput("这是一个TextInput实例。");//创建一个 TextInput 类的实例对象 textInput 。
-	 *				textInput.skin = "resource/ui/input.png";//设置 textInput 的皮肤。
+	 *				textInput.skin = "resource/uiSys/input.png";//设置 textInput 的皮肤。
 	 *				textInput.sizeGrid = "4,4,4,4";//设置 textInput 的网格信息。
 	 *				textInput.color = "#008fff";//设置 textInput 的文本颜色。
 	 *				textInput.font = "Arial";//设置 textInput 的文本字体。
@@ -65,10 +65,10 @@ package laya.ui {
 	 * @example
 	 * Laya.init(640, 800);//设置游戏画布宽高
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
-	 * Laya.loader.load(["resource/ui/input.png"], laya.utils.Handler.create(this, onLoadComplete));//加载资源。
+	 * Laya.loader.load(["resource/uiSys/input.png"], laya.utils.Handler.create(this, onLoadComplete));//加载资源。
 	 * function onLoadComplete() {
-	 *     var textInput = new laya.ui.TextInput("这是一个TextInput实例。");//创建一个 TextInput 类的实例对象 textInput 。
-	 *     textInput.skin = "resource/ui/input.png";//设置 textInput 的皮肤。
+	 *     var textInput = new laya.uiSys.TextInput("这是一个TextInput实例。");//创建一个 TextInput 类的实例对象 textInput 。
+	 *     textInput.skin = "resource/uiSys/input.png";//设置 textInput 的皮肤。
 	 *     textInput.sizeGrid = "4,4,4,4";//设置 textInput 的网格信息。
 	 *     textInput.color = "#008fff";//设置 textInput 的文本颜色。
 	 *     textInput.font = "Arial";//设置 textInput 的文本字体。
@@ -83,17 +83,17 @@ package laya.ui {
 	 * }
 	 * @example
 	 * import Stage = laya.display.Stage;
-	 * import TextInput = laya.ui.TextInput;
+	 * import TextInput = laya.uiSys.TextInput;
 	 * import Handler = laya.utils.Handler;
 	 * class TextInput_Example {
 	 *     constructor() {
 	 *         Laya.init(640, 800);//设置游戏画布宽高、渲染模式。
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load(["resource/ui/input.png"], Handler.create(this, this.onLoadComplete));//加载资源。
+	 *         Laya.loader.load(["resource/uiSys/input.png"], Handler.create(this, this.onLoadComplete));//加载资源。
 	 *     }
 	 *     private onLoadComplete(): void {
 	 *         var textInput: TextInput = new TextInput("这是一个TextInput实例。");//创建一个 TextInput 类的实例对象 textInput 。
-	 *         textInput.skin = "resource/ui/input.png";//设置 textInput 的皮肤。
+	 *         textInput.skin = "resource/uiSys/input.png";//设置 textInput 的皮肤。
 	 *         textInput.sizeGrid = "4,4,4,4";//设置 textInput 的网格信息。
 	 *         textInput.color = "#008fff";//设置 textInput 的文本颜色。
 	 *         textInput.font = "Arial";//设置 textInput 的文本字体。

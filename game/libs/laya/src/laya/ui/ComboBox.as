@@ -17,7 +17,7 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个 <code>ComboBox</code> 实例。</caption>
 	 * package
 	 *	{
-	 *		import laya.ui.ComboBox;
+	 *		import laya.uiSys.ComboBox;
 	 *		import laya.utils.Handler;
 	 *		public class ComboBox_Example
 	 *		{
@@ -25,12 +25,12 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);//设置游戏画布宽高。
 	 *				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load("resource/ui/button.png", Handler.create(this,onLoadComplete));//加载资源。
+	 *				Laya.loader.load("resource/uiSys/button.png", Handler.create(this,onLoadComplete));//加载资源。
 	 *			}
 	 *			private function onLoadComplete():void
 	 *			{
 	 *				trace("资源加载完成！");
-	 *				var comboBox:ComboBox = new ComboBox("resource/ui/button.png", "item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
+	 *				var comboBox:ComboBox = new ComboBox("resource/uiSys/button.png", "item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
 	 *				comboBox.x = 100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 	 *				comboBox.y = 100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 	 *				comboBox.selectHandler = new Handler(this, onSelect);//设置 comboBox 选择项改变时执行的处理器。
@@ -45,10 +45,10 @@ package laya.ui {
 	 * @example
 	 * Laya.init(640, 800);//设置游戏画布宽高。
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 * Laya.loader.load("resource/ui/button.png",laya.utils.Handler.create(this,loadComplete));//加载资源
+	 * Laya.loader.load("resource/uiSys/button.png",laya.utils.Handler.create(this,loadComplete));//加载资源
 	 * function loadComplete() {
 	 *     console.log("资源加载完成！");
-	 *     var comboBox = new laya.ui.ComboBox("resource/ui/button.png", "item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
+	 *     var comboBox = new laya.uiSys.ComboBox("resource/uiSys/button.png", "item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
 	 *     comboBox.x = 100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 	 *     comboBox.y = 100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 	 *     comboBox.selectHandler = new laya.utils.Handler(this, onSelect);//设置 comboBox 选择项改变时执行的处理器。
@@ -59,17 +59,17 @@ package laya.ui {
 	 *     console.log("当前选中的项对象索引： ",index);
 	 * }
 	 * @example
-	 * import ComboBox = laya.ui.ComboBox;
+	 * import ComboBox = laya.uiSys.ComboBox;
 	 * import Handler = laya.utils.Handler;
 	 * class ComboBox_Example {
 	 *     constructor() {
 	 *         Laya.init(640, 800);//设置游戏画布宽高。
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load("resource/ui/button.png", Handler.create(this, this.onLoadComplete));//加载资源。
+	 *         Laya.loader.load("resource/uiSys/button.png", Handler.create(this, this.onLoadComplete));//加载资源。
 	 *     }
 	 *     private onLoadComplete(): void {
 	 *         console.log("资源加载完成！");
-	 *         var comboBox: ComboBox = new ComboBox("resource/ui/button.png", "item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
+	 *         var comboBox: ComboBox = new ComboBox("resource/uiSys/button.png", "item0,item1,item2,item3,item4,item5");//创建一个 ComboBox 类的实例对象 comboBox ,传入它的皮肤和标签集。
 	 *         comboBox.x = 100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 	 *         comboBox.y = 100;//设置 comboBox 对象的属性 x 的值，用于控制 comboBox 对象的显示位置。
 	 *         comboBox.selectHandler = new Handler(this, this.onSelect);//设置 comboBox 选择项改变时执行的处理器。

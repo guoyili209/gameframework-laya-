@@ -6,7 +6,7 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个 <code>TextArea</code> 实例。</caption>
 	 * package
 	 *	{
-	 *		import laya.ui.TextArea;
+	 *		import laya.uiSys.TextArea;
 	 *		import laya.utils.Handler;
 	 *		public class TextArea_Example
 	 *		{
@@ -14,12 +14,12 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);//设置游戏画布宽高。
 	 *				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load(["resource/ui/input.png"], Handler.create(this, onLoadComplete));//加载资源。
+	 *				Laya.loader.load(["resource/uiSys/input.png"], Handler.create(this, onLoadComplete));//加载资源。
 	 *			}
 	 *			private function onLoadComplete():void
 	 *			{
 	 *				var textArea:TextArea = new TextArea("这个一个TextArea实例。");//创建一个 TextArea 类的实例对象 textArea 。
-	 *				textArea.skin = "resource/ui/input.png";//设置 textArea 的皮肤。
+	 *				textArea.skin = "resource/uiSys/input.png";//设置 textArea 的皮肤。
 	 *				textArea.sizeGrid = "4,4,4,4";//设置 textArea 的网格信息。
 	 *				textArea.color = "#008fff";//设置 textArea 的文本颜色。
 	 *				textArea.font = "Arial";//设置 textArea 的字体。
@@ -37,10 +37,10 @@ package laya.ui {
 	 * @example
 	 * Laya.init(640, 800);//设置游戏画布宽高、渲染模式
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
-	 * Laya.loader.load(["resource/ui/input.png"], laya.utils.Handler.create(this, onLoadComplete));//加载资源。
+	 * Laya.loader.load(["resource/uiSys/input.png"], laya.utils.Handler.create(this, onLoadComplete));//加载资源。
 	 * function onLoadComplete() {
-	 *     var textArea = new laya.ui.TextArea("这个一个TextArea实例。");//创建一个 TextArea 类的实例对象 textArea 。
-	 *     textArea.skin = "resource/ui/input.png";//设置 textArea 的皮肤。
+	 *     var textArea = new laya.uiSys.TextArea("这个一个TextArea实例。");//创建一个 TextArea 类的实例对象 textArea 。
+	 *     textArea.skin = "resource/uiSys/input.png";//设置 textArea 的皮肤。
 	 *     textArea.sizeGrid = "4,4,4,4";//设置 textArea 的网格信息。
 	 *     textArea.color = "#008fff";//设置 textArea 的文本颜色。
 	 *     textArea.font = "Arial";//设置 textArea 的字体。
@@ -54,18 +54,18 @@ package laya.ui {
 	 *     Laya.stage.addChild(textArea);//将 textArea 添加到显示列表。
 	 * }
 	 * @example
-	 * import TextArea = laya.ui.TextArea;
+	 * import TextArea = laya.uiSys.TextArea;
 	 * import Handler = laya.utils.Handler;
 	 * class TextArea_Example {
 	 *     constructor() {
 	 *         Laya.init(640, 800);//设置游戏画布宽高、渲染模式。
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load(["resource/ui/input.png"], Handler.create(this, this.onLoadComplete));//加载资源。
+	 *         Laya.loader.load(["resource/uiSys/input.png"], Handler.create(this, this.onLoadComplete));//加载资源。
 	 *     }
 	
 	 *     private onLoadComplete(): void {
 	 *         var textArea: TextArea = new TextArea("这个一个TextArea实例。");//创建一个 TextArea 类的实例对象 textArea 。
-	 *         textArea.skin = "resource/ui/input.png";//设置 textArea 的皮肤。
+	 *         textArea.skin = "resource/uiSys/input.png";//设置 textArea 的皮肤。
 	 *         textArea.sizeGrid = "4,4,4,4";//设置 textArea 的网格信息。
 	 *         textArea.color = "#008fff";//设置 textArea 的文本颜色。
 	 *         textArea.font = "Arial";//设置 textArea 的字体。

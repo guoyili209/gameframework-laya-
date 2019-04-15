@@ -9,7 +9,7 @@ package laya.ui {
 	 * @example <caption>以下示例代码，创建了一个 <code>CheckBox</code> 实例。</caption>
 	 * package
 	 *	{
-	 *		import laya.ui.CheckBox;
+	 *		import laya.uiSys.CheckBox;
 	 *		import laya.utils.Handler;
 	 *		public class CheckBox_Example
 	 *		{
@@ -17,12 +17,12 @@ package laya.ui {
 	 *			{
 	 *				Laya.init(640, 800);//设置游戏画布宽高。
 	 * 				Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *				Laya.loader.load("resource/ui/check.png", Handler.create(this,onLoadComplete));//加载资源。
+	 *				Laya.loader.load("resource/uiSys/check.png", Handler.create(this,onLoadComplete));//加载资源。
 	 *			}
 	 *			private function onLoadComplete():void
 	 *			{
 	 *				trace("资源加载完成！");
-	 *				var checkBox:CheckBox = new CheckBox("resource/ui/check.png", "这个是一个CheckBox组件。");//创建一个 CheckBox 类的实例对象 checkBox ,传入它的皮肤skin和标签label。
+	 *				var checkBox:CheckBox = new CheckBox("resource/uiSys/check.png", "这个是一个CheckBox组件。");//创建一个 CheckBox 类的实例对象 checkBox ,传入它的皮肤skin和标签label。
 	 *				checkBox.x = 100;//设置 checkBox 对象的属性 x 的值，用于控制 checkBox 对象的显示位置。
 	 *				checkBox.y = 100;//设置 checkBox 对象的属性 y 的值，用于控制 checkBox 对象的显示位置。
 	 *				checkBox.clickHandler = new Handler(this, onClick, [checkBox]);//设置 checkBox 的点击事件处理器。
@@ -37,11 +37,11 @@ package laya.ui {
 	 * @example
 	 * Laya.init(640, 800);//设置游戏画布宽高
 	 * Laya.stage.bgColor = "#efefef";//设置画布的背景颜色
-	 * Laya.loader.load("resource/ui/check.png",laya.utils.Handler.create(this,loadComplete));//加载资源
+	 * Laya.loader.load("resource/uiSys/check.png",laya.utils.Handler.create(this,loadComplete));//加载资源
 	 * function loadComplete()
 	 * {
 	 *     console.log("资源加载完成！");
-	 *     var checkBox:laya.ui.CheckBox= new laya.ui.CheckBox("resource/ui/check.png", "这个是一个CheckBox组件。");//创建一个 CheckBox 类的类的实例对象 checkBox ,传入它的皮肤skin和标签label。
+	 *     var checkBox:laya.uiSys.CheckBox= new laya.uiSys.CheckBox("resource/uiSys/check.png", "这个是一个CheckBox组件。");//创建一个 CheckBox 类的类的实例对象 checkBox ,传入它的皮肤skin和标签label。
 	 *     checkBox.x =100;//设置 checkBox 对象的属性 x 的值，用于控制 checkBox 对象的显示位置。
 	 *     checkBox.y =100;//设置 checkBox 对象的属性 y 的值，用于控制 checkBox 对象的显示位置。
 	 *     checkBox.clickHandler = new laya.utils.Handler(this,this.onClick,[checkBox],false);//设置 checkBox 的点击事件处理器。
@@ -52,18 +52,18 @@ package laya.ui {
 	 *     console.log("checkBox.selected = ",checkBox.selected);
 	 * }
 	 * @example
-	 * import CheckBox= laya.ui.CheckBox;
+	 * import CheckBox= laya.uiSys.CheckBox;
 	 * import Handler=laya.utils.Handler;
 	 * class CheckBox_Example{
 	 *     constructor()
 	 *     {
 	 *         Laya.init(640, 800);
 	 *         Laya.stage.bgColor = "#efefef";//设置画布的背景颜色。
-	 *         Laya.loader.load("resource/ui/check.png", Handler.create(this,this.onLoadComplete));//加载资源。
+	 *         Laya.loader.load("resource/uiSys/check.png", Handler.create(this,this.onLoadComplete));//加载资源。
 	 *     }
 	 *     private onLoadComplete()
 	 *     {
-	 *         var checkBox:CheckBox = new CheckBox("resource/ui/check.png", "这个是一个CheckBox组件。");//创建一个 CheckBox 类的实例对象 checkBox ,传入它的皮肤skin和标签label。
+	 *         var checkBox:CheckBox = new CheckBox("resource/uiSys/check.png", "这个是一个CheckBox组件。");//创建一个 CheckBox 类的实例对象 checkBox ,传入它的皮肤skin和标签label。
 	 *         checkBox.x = 100;//设置 checkBox 对象的属性 x 的值，用于控制 checkBox 对象的显示位置。
 	 *         checkBox.y = 100;//设置 checkBox 对象的属性 y 的值，用于控制 checkBox 对象的显示位置。
 	 *         checkBox.clickHandler = new Handler(this, this.onClick,[checkBox]);//设置 checkBox 的点击事件处理器。

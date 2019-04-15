@@ -3,8 +3,13 @@
   <component name="FlexBuildConfigurationManager" active="LayaSample">
     <configurations>
       <configuration name="LayaSample" pure-as="true" main-class="LayaSample" output-file="LayaSample.swf" output-folder="$MODULE_DIR$/bin">
-        <dependencies target-player="30.0">
-          <sdk name="AIRSDK30" />
+        <dependencies target-player="32.0">
+          <entries>
+            <entry library-id="28cbc6a0-b1d3-450d-ac47-56bb9d8faa56">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="AIRSDK32" />
         </dependencies>
         <compiler-options>
           <map>
@@ -24,7 +29,17 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/laya/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="AIRSDK30" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="AIRSDK32" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="28cbc6a0-b1d3-450d-ac47-56bb9d8faa56" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../as/playerglobal.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

@@ -3,55 +3,43 @@ package game {
     import core.ecs.CSystem;
     import core.socket.CCustomSocket;
     
-    import game.loader.CLoaderSystem;
-    import game.loader.ELoaderSystemEvent;
+    import game.gameSys.loader.CLoaderSystem;
+    import game.gameSys.loader.ELoaderSystemEvent;
+    import game.gameSys.log.CLogSystem;
     
-    import game.scene.CSceneSystem;
-    import game.table.CTableBaseSystem;
-    import game.ui.CUISystem;
+    import game.gameSys.scene.CSceneSystem;
+    import game.gameSys.table.CTableBaseSystem;
+    import game.uiSys.root.CUISystem;
     
     import laya.events.EventDispatcher;
     import laya.utils.Dictionary;
     
     public class CAppFacade extends EventDispatcher{
         public var bPause:Boolean = true;
-        public var appStage:CAppStage = null;
-        public var socket:CCustomSocket = null;
+        private var _appStage:CAppStage = null;
+        private var _socket:CCustomSocket = null;
+        private var _recordView:CRecordUIViewState = null;
         
+        public function get recordView():CRecordUIViewState{
+            return _recordView;
+        }
+        public function get appStage():CAppStage{
+            return _appStage;
+        }
+        public function get socket():CCustomSocket{
+            return _socket;
+        }
         public function CAppFacade() {
             _systemVec = new Vector.<CSystem>();
             _systemTagDic = new Dictionary();
-            appStage = new CAppStage();
-            socket = new CCustomSocket();
-            
+            _appStage = new CAppStage();
+            _socket = new CCustomSocket();
+            _recordView = new CRecordUIViewState();
             _addEvent();
         }
-        
-        private function _addEvent():void{
-            this.on(ELoaderSystemEvent.ASSETS_LOAD_COMPLETE,this,_initGameSystem);
-        }
-        
         public function initSystem():void{
             addSystem(new CLoaderSystem(this));
         }
-        
-        private function _initGameSystem():void{
-            addSystem(new CTableBaseSystem(this));
-            addSystem(new CSceneSystem(this));
-            addSystem(new CUISystem(this));
-    
-            for each(var sys:* in _systemVec){
-                if(sys is IBundleSystem){
-                    var tag:String = IBundleSystem(sys).systemTag;
-                    _systemTagDic[tag] = sys;
-                }
-            }
-        }
-        
-        private function addSystem(sys:CSystem):void{
-            _systemVec.push(sys);
-        }
-        
         public function getSystem(cls:Class):CSystem{
             for each(var obj:CSystem in _systemVec){
                 if(obj is cls){
@@ -60,7 +48,6 @@ package game {
             }
             return obj;
         }
-        
         public function activateSystemByTag(sysTag:String,bool:Boolean):void{
             var system:IBundleSystem = _systemTagDic.get(sysTag) as IBundleSystem;
             if(system)
@@ -70,7 +57,6 @@ package game {
                 console.log("sysTag:"+sysTag+"不存在");
             }
         }
-        
         public function update(deltaTime:Number):void{
             for each(var sys:CSystem in _systemVec){
                 if(sys.enable){
@@ -78,7 +64,25 @@ package game {
                 }
             }
         }
+        private function _initGameSystem():void{
+            addSystem(new CLogSystem(this));
+            addSystem(new CTableBaseSystem(this));
+            addSystem(new CSceneSystem(this));
+            addSystem(new CUISystem(this));
         
+            for each(var sys:* in _systemVec){
+                if(sys is IBundleSystem){
+                    var tag:String = IBundleSystem(sys).systemTag;
+                    _systemTagDic[tag] = sys;
+                }
+            }
+        }
+        private function _addEvent():void{
+            this.on(ELoaderSystemEvent.ASSETS_LOAD_COMPLETE,this,_initGameSystem);
+        }
+        private function addSystem(sys:CSystem):void{
+            _systemVec.push(sys);
+        }
         private var _systemVec:Vector.<CSystem> = null;
         private var _systemTagDic:Dictionary = null;
     }
